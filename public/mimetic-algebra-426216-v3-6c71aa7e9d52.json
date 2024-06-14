@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "mimetic-algebra-426216-v3",
+  "private_key_id": "6c71aa7e9d520f25d31edb6f6c9782f329ec5e66",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCKLQMxQL/UggRB\nUFh3Y46riFTmHbwAf79TCfkQiTUHYSqAcNP4/sXO2+FIlXSujlf82DKlxonKEcqd\nOl7YuKEDBH/9u4KAVgHg82kB/FZWx0dxn78zyZDXFfSpuHqRm4zlQIPdsbZdbSVn\nV3ipjWJ2GzVcuF1FFBtAUXqSlh9Nvf2YAAoETqaXIUsr0wZ4z/2xxVFKegLYJ96a\n/WQ3vxiZIeMXk/09fsavAhywzMIIhwIVl6zCSosPj22KSBR31XHie15PhIIB0oVf\nCHJr5I4aZnizjLnUzLtMLWZOqy1HbyN781ZXUk13hPgYMsg7LI2s/dzWXAUMXxPZ\nITHyp61DAgMBAAECggEAONdriMdqIrGZroSu3+5EsqvSwRdaT5o9yps/ql3HQtHl\n+hBwIu4r0X0CoClbZrOH3qvRqgCSjl3jS+rHOcA5/FPNk0Of28uF2lRHzllP60Lv\nUP62WUeCHfkaPPd29I9Y1rZDiN+idayAxpJlQNq4tn1a5lmxhMlQrJTYJ5U6K3By\nMrp6+j+t/PULz+rzuS6aVOEkHBCdxG4RpS3eGeVtBZ90kPYoW/U0E0e6jFE+jQCS\n/opqAR7Dn0v2qFs/zkHIiUrDQFw9FgPzmflfd3OKi5YV7Oxp5fEhkgiiaEGZEOVf\nW2wz7CXPQ/XCo0g+v3XYvjUS2Ft866fwMeX+Xs29AQKBgQC9z7YpkX+7UOWhmvT/\njDLhKOTYPvqMJVic0WBWSrEUFTlZ+IWI3QMf2pCDEZ2PrK8JMLeeuLcj2Q78EIzF\nHAU2CbFpJvUoh8Zs7bzYmWxII1THC1T2zap1KGUAeSVkXgwMRWupd5txPsaC+dev\nuVFoXAMRjZ5EVyEHT1gwShJrCwKBgQC6W9fMzgQq9uW9RP2X+h0Ai/VaiKRw4JRn\nIZW7DRQHcuz/KoBQC7rajpiqmXN2IroK1H3T5B44ltQZd70OPiwWEDYp7I2M9Y41\nBl2+IBOtb9i00awTEmx+7lvg409hunS2Rl9rnf0YSu1+JgA5GUkQdq3BlcjyBFnk\nLwZiFnbpqQKBgQCqu9m5Tl082qmTUdUqwKtLiQM/2HZ59WXduSAUvp7F18l8umUz\nFMoorurqWsAFamkPtTiVlsV1g1tNNH3LF0dAsjtYwGgpCuhbNwV1N5wEz3MEj5bf\nYWQAelNPt6kAvO/NYexTxXiWxsa9LYrrT6CAZLOF6IMCKfVVo/NJjHdAvQKBgB5I\nsobrq623tZnOTk+WK4RdOh/eOKrHNBaWVJizBWA4gt7sbzGS1miR56lBiovWFNmR\nsmjulyKnEAybcrOP0uY6+DJT6KTReqyPPkiZOdljZZnswMPQqKTv4ypmhg3hmPnN\n8c+xOuHpuzJWxo6A12i/gHkG+EKsBleYdLcX43cRAoGBAJMR0lsjJl0+8rgaxTya\n4/Uc6amdlbyD1roOXA5UMuELjgACD0ou/SFYEa5ryXiiNWMqPcLcBrtK5+rop+ko\n0GaHHah51FjXM3g5zlLtVSpQN/r9hAYbgugKjcrN1z+CCgI2uJquGnmCvmz+j7PV\niLwBSpNwjvb/r65ZeNCtCh90\n-----END PRIVATE KEY-----\n",
+  "client_email": "raygun@mimetic-algebra-426216-v3.iam.gserviceaccount.com",
+  "client_id": "102594175955199368154",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/raygun%40mimetic-algebra-426216-v3.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
