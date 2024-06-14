@@ -8,7 +8,7 @@ export default async function sendVerificationRequest(params: any) {
   const result = await transport.sendMail({
     to: identifier,
     from: provider.from,
-    subject: `Sign in to hello.skvll.com`,
+    subject: `Sign in to astrology`,
     text: text({ url, host }),
     html: html({ url, host }),
   });
