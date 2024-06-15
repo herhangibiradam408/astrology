@@ -340,7 +340,7 @@ export default function Home() {
           <div
             className="z-0 absolute left-1/2 -translate-x-1/2 flex justify-center aspect-[16/9]"
             style={{
-              top: "calc(102/800 * 100%)",
+              top: "calc(110/800 * 100%)",
               height: "calc(115/300 * 100%)",
               left: "calc(102/200 * 100%)",
               transform: "translate(-50%)",

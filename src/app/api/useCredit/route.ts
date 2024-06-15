@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
 
 async function getCurrentCredits(userId: string) {
   const getItemCommand = new GetCommand({
-    TableName: "spacecraft",
+    TableName: "astrology",
     Key: { pk: `USER#${userId}`, sk: `USER#${userId}` },
   });
 

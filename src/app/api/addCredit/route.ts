@@ -15,13 +15,14 @@ const ddbDocClient = DynamoDBDocumentClient.from(client);
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const userId = body.userId;
+  const requestedCredit = body.requestedCredit;
 
   const command = new UpdateCommand({
     TableName: "astrology",
     Key: { pk: `USER#${userId}`, sk: `USER#${userId}` },
     UpdateExpression: "ADD credit :inc",
     ExpressionAttributeValues: {
-      ":inc": 1,
+      ":inc": requestedCredit ? requestedCredit : 1,
     },
     ReturnValues: "UPDATED_NEW",
   });
