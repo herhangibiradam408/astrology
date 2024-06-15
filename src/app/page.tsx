@@ -249,7 +249,7 @@ export default function Home() {
   };
 
   const handleAssistant = async function () {
-    const res = await fetch("/api/assistant", {
+    const res = await fetch("/api/documentRetrieval", {
       method: "POST",
     });
   };

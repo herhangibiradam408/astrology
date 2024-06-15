@@ -20,42 +20,53 @@ const storage = new Storage({
   keyFilename: "public/mimetic-algebra-426216-v3-6c71aa7e9d52.json",
 });
 
+function removeReferences(text: string) {
+  const cleanedText = text.replace(/\[\d+\]/g, "");
+  return cleanedText;
+}
 export async function POST(req: NextRequest) {
+  const curDate = new Date();
+  const day = curDate.getDate();
+  const month = curDate.getMonth() + 1;
+  const year = curDate.getFullYear();
   const body = await req.json();
   const inputText = body.inputText;
   const character = body.character;
   console.log(inputText);
-  const completion = await openai.chat.completions.create({
-    messages: [
-      {
-        role: "system",
-        content: `You are Lady Fortuna and playing the role of an astrologer and an expert in cartomancy
-who predicts the future by understanding the positions of the planets and Sun and Moon in the
-birth chart of an individual. You can provide numerology if the name is provided. You can also
-provide daily horoscopes based on today’s date and birthday. Your tarot card readings are
-based on the energy transmitting through the computer. Provide your answer in the following
-manner: 1) astrology predictions on love, health and wealth. 2) your numerology and your lucky
-numbers. 3) your horoscope reading for today. You base your knowledge on this ancient Manual
-of Cartomancy and Occult Divination. Never say contact a professional astrologer. Always close
-your answer with that these are signs and predictions based on the information provided,
-however my friend, your ultimate fate and destiny lies within you and the forces above.
 
-`,
-      },
-      { role: "user", content: inputText },
+  const payloadText = {
+    search_query: inputText,
+    documents: [
+      "https://zapbucket.s3.amazonaws.com/manualofcartoman00gran.pdf",
     ],
-    model: "gpt-4-0125-preview",
+    task_instructions: `You are playing the role of an astrologer and an expert in cartomancy who predicts the future by understanding the positions of the planets and Sun and Moon in the birth chart of an individual. You can provide numerology if the name is provided. You can also provide daily horoscopes based on today’s date and birthday. Your tarot card readings are based on the energy transmitting through the computer. Provide your answer in the following manner: 1) astrology predictions on love, health and wealth. 2) your numerology and your lucky numbers. 3) your horoscope reading for today. Never say contact a professional astrologer. Always close your answer with that these are signs and predictions based on the information provided, however remember my friend, your ultimate fate and destiny lies within you and the forces above.
+      Generate a comprehensive, factoid Answer the for the following Question soely based on the provided Search Results. If the Search Results do not contain enough information, say "I don't know". Use an unbiased, succinct, and funny tone. Use this current date and time: {${`Day: ${day}, Month: ${month}, Year: ${year}`}}. Combine Search Results together into a coherent answer. Remember to cite the search results using [${"number"}] notation in your answer.
+      `,
+    max_tokens: 1024,
+  };
+
+  const responseText = await fetch("https://api.gooey.ai/v2/doc-search/", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + process.env["GOOEY_API_KEY"],
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payloadText),
   });
 
-  const content = await completion.choices[0].message.content;
-  console.log("content:" + content);
+  if (!responseText.ok) {
+    throw new Error(`HTTP Error: ${responseText.status}`);
+  }
+
+  const resultText = await responseText.json();
+  const retrievalResponse = removeReferences(resultText.output.output_text[0]);
 
   const request = {
-    input: { text: content },
+    input: { text: retrievalResponse },
     voice: {
-      languageCode: character === "AVA" ? "en-US" : "en-US",
-      name: character === "AVA" ? "en-US-Standard-F" : "en-US-Casual-K",
-      ssmlGender: character === "AVA" ? "FEMALE" : "MALE",
+      languageCode: "en-US",
+      name: "en-US-Neural2-C",
+      ssmlGender: "FEMALE",
     },
     audioConfig: { audioEncoding: "MP3" },
   };
