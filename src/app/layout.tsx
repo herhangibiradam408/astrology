@@ -57,7 +57,7 @@ export default async function RootLayout({
         />
         <title>RAYGUN</title>
       </Head>
-      <body className={`${bebasNeue.className} bg-black`}>
+      <body className="bg-black">
         <SessionProvider session={session}>{children}</SessionProvider>
       </body>
     </html>
