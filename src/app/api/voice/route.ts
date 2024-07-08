@@ -14,10 +14,12 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-const bucketName = "raygun";
+const bucketName = "raygunbucket";
 const storage = new Storage({
-  projectId: "mimetic-algebra-426216-v3",
-  keyFilename: "public/mimetic-algebra-426216-v3-6c71aa7e9d52.json",
+  projectId: process.env.PROJECT_ID,
+  credentials: JSON.parse(
+    process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON || ""
+  ),
 });
 
 function removeReferences(text: string) {
