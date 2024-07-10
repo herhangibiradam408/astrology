@@ -10,6 +10,7 @@ import { useSession, signIn } from "next-auth/react";
 import BuyCredit from "@/components/BuyCredit";
 import PaymentComponent from "@/components/PaymentComponent";
 import { Button } from "@/components/ui/button";
+import ErrorComponent from "@/components/ErrorComponent";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -35,6 +36,7 @@ export default function Home() {
   const [timeOfBirth, setTimeOfBirth] = useState("");
   const [location, setLocation] = useState("");
   const [character, setCharacter] = useState("");
+  const [isError, setIsError] = useState(false);
   //https://storage.googleapis.com/childrenstory-bucket/KAI30_small.mp4
   //"https://storage.googleapis.com/childrenstory-bucket/AVA30_GLITCH2.mp4"
   const kaiVideoUrl =
@@ -156,23 +158,28 @@ export default function Home() {
   }, [isLoading]);
 
   const handleClick = async function () {
-    setIsLoading(true);
-    const res = await fetch("/api/voice", {
-      method: "POST",
-      body: JSON.stringify({
-        inputText: inputText,
-        character: character,
-        name,
-        dateOfBirth,
-        timeOfBirth,
-        location,
-      }),
-    });
-    const text = await res.text();
-    console.log("text:" + text);
-    setIsLoading(false);
-    setVideoUrl(text);
-    setVideoKey(Date.now());
+    try {
+      setIsLoading(true);
+      const res = await fetch("/api/voice", {
+        method: "POST",
+        body: JSON.stringify({
+          inputText: inputText,
+          character: character,
+          name,
+          dateOfBirth,
+          timeOfBirth,
+          location,
+        }),
+      });
+      const text = await res.text();
+      console.log("text:" + text);
+      setIsLoading(false);
+      setVideoUrl(text);
+      setVideoKey(Date.now());
+    } catch (error) {
+      setIsError(true);
+      console.error(error);
+    }
   };
 
   const decrementCredit = async function () {
@@ -275,6 +282,7 @@ export default function Home() {
   };
   return (
     <div className="relative bg-black h-screen w-full">
+      {isError && <ErrorComponent />}
       <button
         className="absolute z-30 top-0 bg-transparent text-transparent"
         style={{
