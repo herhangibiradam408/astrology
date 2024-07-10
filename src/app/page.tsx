@@ -9,6 +9,7 @@ import SignInForm from "@/components/SignInForm";
 import { useSession, signIn } from "next-auth/react";
 import BuyCredit from "@/components/BuyCredit";
 import PaymentComponent from "@/components/PaymentComponent";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -29,7 +30,10 @@ export default function Home() {
   const [inputWidth, setInputWidth] = useState(0);
   const [videoHeight, setVideoHight] = useState(0);
   const [inputHeight, setInputHeight] = useState(0);
-
+  const [name, setName] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [timeOfBirth, setTimeOfBirth] = useState("");
+  const [location, setLocation] = useState("");
   const [character, setCharacter] = useState("");
   //https://storage.googleapis.com/childrenstory-bucket/KAI30_small.mp4
   //"https://storage.googleapis.com/childrenstory-bucket/AVA30_GLITCH2.mp4"
@@ -40,13 +44,18 @@ export default function Home() {
 
   const image = { width: 1920, height: 970 };
   const target = { x: 1235, y: 305 };
-  const targetInput = { x: 820, y: 820 };
+  const targetInput = { x: 820, y: 807 };
+  const targetForm = { x: 820, y: 880 };
   const targetVideo = { x: 500, y: 200 };
   const [pointerCreditPosition, setPointerCreditPosition] = useState({
     top: 0,
     left: 0,
   });
   const [pointerInputPosition, setPointerInputPosition] = useState({
+    top: 0,
+    left: 0,
+  });
+  const [pointerFormPosition, setPointerFormPosition] = useState({
     top: 0,
     left: 0,
   });
@@ -82,6 +91,10 @@ export default function Home() {
         top: targetInput.y * scale + yOffset,
         left: targetInput.x * scale + xOffset,
       });
+      setPointerFormPosition({
+        top: targetForm.y * scale + yOffset,
+        left: targetForm.x * scale + xOffset,
+      });
 
       setPointerVideoPosition({
         top: targetVideo.y * scale + yOffset,
@@ -100,7 +113,7 @@ export default function Home() {
 
     function handleResize() {
       const newFontSize = `${(window.innerHeight * 35) / 930}px`;
-      const newInputFontSize = `${(window.innerHeight * 25) / 930}px`;
+      const newInputFontSize = `${(window.innerHeight * 15) / 930}px`;
       setFontSize(newFontSize);
       setInputFontSize(newInputFontSize);
     }
@@ -146,7 +159,14 @@ export default function Home() {
     setIsLoading(true);
     const res = await fetch("/api/voice", {
       method: "POST",
-      body: JSON.stringify({ inputText: inputText, character: character }),
+      body: JSON.stringify({
+        inputText: inputText,
+        character: character,
+        name,
+        dateOfBirth,
+        timeOfBirth,
+        location,
+      }),
     });
     const text = await res.text();
     console.log("text:" + text);
@@ -278,23 +298,76 @@ export default function Home() {
       <div className="relative w-full h-screen">
         {!isLoading ? (
           <form onSubmit={handleSubmit}>
-            <textarea
-              placeholder={`${session ? "ASK A QUESTION" : "ASK A QUESTION"}`}
-              value={inputText}
-              onChange={(e) => {
-                setInputText(e.target.value);
-              }}
-              onKeyDown={handleKeyDown}
+            <p
               style={{
                 height: "calc(1/6 * 100%)",
                 top: `${pointerInputPosition.top}px`,
                 left: `${pointerInputPosition.left}px`,
                 //width: "calc(22/100 * 100%)",
                 width: `${inputWidth}px`,
+                fontSize: inputFontSize,
+              }}
+              className="absolute tracking-tighter leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden"
+            >
+              Bestow upon me the tales you wish to weave. The richer the
+              details, the finer the tapestry. Your data is encrypted for
+              privacy and security and deleted once our mystical session ends.
+            </p>
+            <div
+              style={{
+                height: "calc(1/6 * 100%)",
+                top: `${pointerFormPosition.top}px`,
+                left: `${pointerFormPosition.left}px`,
+                //width: "calc(22/100 * 100%)",
+                width: `${inputWidth}px`,
                 fontSize: `${inputFontSize}`,
               }}
-              className="absolute top-3/4 -translate-y-2/3 tracking-widest bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden"
-            />
+              className="absolute tracking-tighter leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden"
+            >
+              <div className="flex items-center gap-2">
+                <p>YOUR NAME:</p>
+                <input
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                  className="bg-transparent border-b mb-1.5 border-white focus:border-b focus:border-white focus:outline-none h-full"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <p>DATE OF BIRTH:</p>
+                <input
+                  value={dateOfBirth}
+                  onChange={(e) => {
+                    setDateOfBirth(e.target.value);
+                  }}
+                  className="bg-transparent border-b mb-1.5 border-white focus:border-b focus:border-white focus:outline-none h-full"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <p>TIME OF BIRTH:</p>
+                <input
+                  value={timeOfBirth}
+                  onChange={(e) => {
+                    setTimeOfBirth(e.target.value);
+                  }}
+                  className="bg-transparent border-b mb-1.5 border-white focus:border-b focus:border-white focus:outline-none h-full"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <p>LOCATION:</p>
+                <input
+                  value={location}
+                  onChange={(e) => {
+                    setLocation(e.target.value);
+                  }}
+                  className="bg-transparent border-b mb-1.5 border-white focus:border-b focus:border-white focus:outline-none h-full"
+                />
+                <Button onClick={handleClick} className="h-[10px]">
+                  Send
+                </Button>
+              </div>
+            </div>
           </form>
         ) : (
           <LoadingType
@@ -304,7 +377,7 @@ export default function Home() {
         )}
         <LazyLoadImage
           className="z-10 absolute top-0 left-0 w-full h-full object-cover"
-          src="/ASTROLOGY_ROOM_TRANSPARENT.png"
+          src="/ASTROLOGY_ROOM_LADY_FORTUNA.png"
           alt="background"
           style={{ objectFit: "cover" }}
         />
@@ -393,3 +466,23 @@ export default function Home() {
     </div>
   );
 }
+
+/*
+<textarea
+              placeholder={`${session ? "ASK A QUESTION" : "ASK A QUESTION"}`}
+              value={inputText}
+              onChange={(e) => {
+                setInputText(e.target.value);
+              }}
+              onKeyDown={handleKeyDown}
+              style={{
+                height: "calc(1/6 * 100%)",
+                top: `${pointerInputPosition.top}px`,
+                left: `${pointerInputPosition.left}px`,
+                //width: "calc(22/100 * 100%)",
+                width: `${inputWidth}px`,
+                fontSize: `${inputFontSize}`,
+              }}
+              className="absolute top-3/4 -translate-y-2/3 tracking-widest bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden"
+            />
+*/

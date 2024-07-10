@@ -33,16 +33,25 @@ export async function POST(req: NextRequest) {
   const year = curDate.getFullYear();
   const body = await req.json();
   const inputText = body.inputText;
+  const name = body.name;
+  const dateOfBirth = body.dateOfBirth;
+  const timeOfBirth = body.timeOfBirth;
+  const location = body.location;
   const character = body.character;
+  console.log("name: " + name);
+  console.log("dateOfbirth: " + dateOfBirth);
+  console.log("timeOfbirth: " + timeOfBirth);
+  console.log("location: " + location);
+
   console.log(inputText);
 
   const payloadText = {
-    search_query: inputText,
+    search_query: `Name: ${name}, Date of Birth: ${dateOfBirth}, Time of Birth: ${timeOfBirth}, Location: ${location}`,
     documents: [
       "https://zapbucket.s3.amazonaws.com/manualofcartoman00gran.pdf",
     ],
     task_instructions: `You are playing the role of an astrologer and an expert in cartomancy who predicts the future by understanding the positions of the planets and Sun and Moon in the birth chart of an individual. You can provide numerology if the name is provided. You can also provide daily horoscopes based on today’s date and birthday. Your tarot card readings are based on the energy transmitting through the computer. Provide your answer in the following manner: 1) astrology predictions on love, health and wealth. 2) your numerology and your lucky numbers. 3) your horoscope reading for today. Never say contact a professional astrologer. Always close your answer with that these are signs and predictions based on the information provided, however remember my friend, your ultimate fate and destiny lies within you and the forces above.
-      Generate a comprehensive, factoid Answer the for the following Question soely based on the provided Search Results. If the Search Results do not contain enough information, say "I don't know". Use an unbiased, succinct, and funny tone. Use this current date and time: {${`Day: ${day}, Month: ${month}, Year: ${year}`}}. Combine Search Results together into a coherent answer. Remember to cite the search results using [${"number"}] notation in your answer.
+      Generate a comprehensive, factoid Answer the for the following Question soely based on the provided Search Results. If the Search Results do not contain enough information, say "I don't know". Use an unbiased, succinct, and funny tone. Use this current date and time: {${`Day: ${day}, Month: ${month}, Year: ${year}`}}. Combine Search Results together into a coherent answer. Do not use punctuation marks like # * : because this text will be voiced by another AI. Make it like a speech text
       `,
     max_tokens: 1024,
   };
@@ -62,7 +71,8 @@ export async function POST(req: NextRequest) {
 
   const resultText = await responseText.json();
   const retrievalResponse = removeReferences(resultText.output.output_text[0]);
-
+  console.log("retrieval response:");
+  console.log(retrievalResponse);
   const request = {
     input: { text: retrievalResponse },
     voice: {
@@ -104,7 +114,7 @@ export async function POST(req: NextRequest) {
   );
 
   const payload = {
-    input_face: "https://storage.googleapis.com/raygun/LadyFortuna_Blinks.mp4",
+    input_face: "https://zapbucket.s3.amazonaws.com/LadyFortuna_Blinks.mp4",
     input_audio: `https://storage.googleapis.com/${bucketName}/${fileDestination}`,
     selected_model: "Wav2Lip",
   };
