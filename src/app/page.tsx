@@ -234,9 +234,11 @@ export default function Home() {
 
   useEffect(() => {
     if (isMainVideoLoaded && mainVideoRef.current) {
-      mainVideoRef.current.play();
+      mainVideoRef.current
+        .play()
+        .catch((e) => console.error("Video playback failed:", e));
       if (loopVideoRef.current) {
-        loopVideoRef.current.style.opacity = 0;
+        loopVideoRef.current.style.opacity = "0";
       }
     }
   }, [isMainVideoLoaded]);
