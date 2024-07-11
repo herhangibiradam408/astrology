@@ -233,13 +233,22 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (isMainVideoLoaded && mainVideoRef.current) {
+    if (mainVideoRef.current) {
+      mainVideoRef.current.muted = true;
       mainVideoRef.current
         .play()
-        .catch((e) => console.error("Video playback failed:", e));
-      if (loopVideoRef.current) {
-        loopVideoRef.current.style.opacity = "0";
-      }
+        .then(() => {
+          // Video başladıktan 2 saniye sonra sesi aç
+          setTimeout(() => {
+            if (mainVideoRef.current) {
+              mainVideoRef.current.muted = false;
+              setVideoMuted(false);
+            }
+          }, 2000);
+        })
+        .catch((error) => {
+          console.error("Video playback failed:", error);
+        });
     }
   }, [isMainVideoLoaded]);
 
