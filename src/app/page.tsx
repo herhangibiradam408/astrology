@@ -67,6 +67,7 @@ export default function Home() {
     left: 0,
   });
   const [isMainVideoLoaded, setIsMainVideoLoaded] = useState(false);
+  const [isFirstVideoEnded, setIsFirstVideoEnded] = useState(false);
   const mainVideoRef = useRef<HTMLVideoElement>(null);
   const loopVideoRef = useRef<HTMLVideoElement>(null);
 
@@ -253,6 +254,9 @@ export default function Home() {
   }, [isMainVideoLoaded]);
 
   const handleVideoEnd = () => {
+    if (!isFirstVideoEnded) {
+      setIsFirstVideoEnded(true);
+    }
     setVideoUrl("/LadyFortuna_Blinks.mp4");
     setVideoKey(Date.now());
   };
@@ -464,20 +468,22 @@ export default function Home() {
               </video>
 
               {/* Ana video */}
-              <video
-                ref={mainVideoRef}
-                key={`main-${videoKey}`}
-                muted={videoMuted}
-                className={`h-full w-full absolute top-0 left-0 transition-opacity duration-1000 ${
-                  isMainVideoLoaded ? "opacity-100" : "opacity-0"
-                }`}
-                autoPlay
-                playsInline
-                preload="auto"
-                onEnded={handleVideoEnd}
-              >
-                <source src="/LadyFortuna_Full.mp4" type="video/mp4" />
-              </video>
+              {!isFirstVideoEnded && (
+                <video
+                  ref={mainVideoRef}
+                  key={`main-${videoKey}`}
+                  muted={videoMuted}
+                  className={`h-full w-full absolute top-0 left-0 transition-opacity duration-1000 ${
+                    isMainVideoLoaded ? "opacity-100" : "opacity-0"
+                  }`}
+                  autoPlay
+                  playsInline
+                  preload="auto"
+                  onEnded={handleVideoEnd}
+                >
+                  <source src="/LadyFortuna_Full.mp4" type="video/mp4" />
+                </video>
+              )}
             </div>
           ) : (
             ""
