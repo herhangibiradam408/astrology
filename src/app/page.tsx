@@ -37,6 +37,7 @@ export default function Home() {
   const [location, setLocation] = useState("");
   const [character, setCharacter] = useState("");
   const [isError, setIsError] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(true);
   //https://storage.googleapis.com/childrenstory-bucket/KAI30_small.mp4
   //"https://storage.googleapis.com/childrenstory-bucket/AVA30_GLITCH2.mp4"
   const kaiVideoUrl =
@@ -65,6 +66,9 @@ export default function Home() {
     top: 0,
     left: 0,
   });
+  const [isMainVideoLoaded, setIsMainVideoLoaded] = useState(false);
+  const mainVideoRef = useRef(null);
+  const loopVideoRef = useRef(null);
 
   useEffect(() => {
     const updatePointer = () => {
@@ -216,6 +220,27 @@ export default function Home() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    // Ana videoyu ön yükleme
+    const mainVideo = new Audio("/LadyFortuna_Full.mp4");
+    mainVideo.preload = "auto";
+    mainVideo.load();
+    mainVideo.oncanplaythrough = () => setIsMainVideoLoaded(true);
+
+    // Döngü videosunu ayarlama
+    setVideoUrl("/LadyFortuna_Blinks.mp4");
+    setVideoKey(Date.now());
+  }, []);
+
+  useEffect(() => {
+    if (isMainVideoLoaded && mainVideoRef.current) {
+      mainVideoRef.current.play();
+      if (loopVideoRef.current) {
+        loopVideoRef.current.style.opacity = 0;
+      }
+    }
+  }, [isMainVideoLoaded]);
+
   const handleVideoEnd = () => {
     setVideoUrl("/LadyFortuna_Blinks.mp4");
     setVideoKey(Date.now());
@@ -280,197 +305,227 @@ export default function Home() {
       method: "POST",
     });
   };
-  return (
-    <div className="relative bg-black h-screen w-full">
-      {isError && <ErrorComponent />}
-      <button
-        className="absolute z-30 top-0 bg-transparent text-transparent"
-        style={{
-          width: "calc(1/25 * 100%)",
-          top: "calc(180/400 * 100%)",
-          right: "calc(132/400 * 100%)",
-        }}
-        onClick={() => {
-          //addCredit();
-          //setCreditCount(creditCount + 1);
 
-          if (session) {
-            setShowBuyCredit(true);
-          } else {
-            setShowForm(true);
-          }
-        }}
-      >
-        token
-      </button>
-      <div className="relative w-full h-screen">
-        {!isLoading ? (
-          <form onSubmit={handleSubmit}>
-            <p
-              style={{
-                height: "calc(1/6 * 100%)",
-                top: `${pointerInputPosition.top}px`,
-                left: `${pointerInputPosition.left}px`,
-                //width: "calc(22/100 * 100%)",
-                width: `${inputWidth}px`,
-                fontSize: inputFontSize,
-              }}
-              className="absolute tracking-tighter leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden"
-            >
-              Bestow upon me the tales you wish to weave. The richer the
-              details, the finer the tapestry. Your data is encrypted for
-              privacy and security and deleted once our mystical session ends.
-            </p>
+  const LoadingScreen = () => (
+    <div className="absolute top-0 left-0 w-full h-full bg-black flex items-center justify-center z-20">
+      <div className="text-white text-2xl">Loading...</div>
+    </div>
+  );
+  return (
+    <div>
+      {isImageLoading && LoadingScreen()}
+      <div className="relative bg-black h-screen w-full">
+        {isError && <ErrorComponent />}
+        <button
+          className="absolute z-30 top-0 bg-transparent text-transparent"
+          style={{
+            width: "calc(1/25 * 100%)",
+            top: "calc(180/400 * 100%)",
+            right: "calc(132/400 * 100%)",
+          }}
+          onClick={() => {
+            //addCredit();
+            //setCreditCount(creditCount + 1);
+
+            if (session) {
+              setShowBuyCredit(true);
+            } else {
+              setShowForm(true);
+            }
+          }}
+        >
+          token
+        </button>
+        <div className="relative w-full h-screen">
+          {!isLoading ? (
+            <form onSubmit={handleSubmit}>
+              <p
+                style={{
+                  height: "calc(1/6 * 100%)",
+                  top: `${pointerInputPosition.top}px`,
+                  left: `${pointerInputPosition.left}px`,
+                  //width: "calc(22/100 * 100%)",
+                  width: `${inputWidth}px`,
+                  fontSize: inputFontSize,
+                }}
+                className="absolute tracking-tighter leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden"
+              >
+                Bestow upon me the tales you wish to weave. The richer the
+                details, the finer the tapestry. Your data is encrypted for
+                privacy and security and deleted once our mystical session ends.
+              </p>
+              <div
+                style={{
+                  height: "calc(1/6 * 100%)",
+                  top: `${pointerFormPosition.top}px`,
+                  left: `${pointerFormPosition.left}px`,
+                  //width: "calc(22/100 * 100%)",
+                  width: `${inputWidth}px`,
+                  fontSize: `${inputFontSize}`,
+                }}
+                className="absolute tracking-tighter leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden"
+              >
+                <div className="flex items-center gap-2">
+                  <p>YOUR NAME:</p>
+                  <input
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                    }}
+                    className="bg-transparent border-b mb-1.5 border-white focus:border-b focus:border-white focus:outline-none h-full"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <p>DATE OF BIRTH:</p>
+                  <input
+                    value={dateOfBirth}
+                    onChange={(e) => {
+                      setDateOfBirth(e.target.value);
+                    }}
+                    className="bg-transparent border-b mb-1.5 border-white focus:border-b focus:border-white focus:outline-none h-full"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <p>TIME OF BIRTH:</p>
+                  <input
+                    value={timeOfBirth}
+                    onChange={(e) => {
+                      setTimeOfBirth(e.target.value);
+                    }}
+                    className="bg-transparent border-b mb-1.5 border-white focus:border-b focus:border-white focus:outline-none h-full"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <p>LOCATION:</p>
+                  <input
+                    value={location}
+                    onChange={(e) => {
+                      setLocation(e.target.value);
+                    }}
+                    className="bg-transparent border-b mb-1.5 border-white focus:border-b focus:border-white focus:outline-none h-full"
+                  />
+                  <Button
+                    onClick={handleClick}
+                    className="bg-transparent h-[10px]"
+                  >
+                    Send
+                  </Button>
+                </div>
+              </div>
+            </form>
+          ) : (
+            <LoadingType
+              character={character}
+              pointerInputPosition={pointerInputPosition}
+            />
+          )}
+          <LazyLoadImage
+            className="z-10 absolute top-0 left-0 w-full h-full object-cover"
+            src="/ASTROLOGY_ROOM_LADY_FORTUNA.png"
+            alt="background"
+            style={{ objectFit: "cover" }}
+            onLoad={() => setIsImageLoading(false)}
+          />
+
+          {videoUrl && !videoURLs.includes(videoUrl) ? (
             <div
+              className="z-0 absolute flex justify-center aspect-[16/9]"
               style={{
-                height: "calc(1/6 * 100%)",
-                top: `${pointerFormPosition.top}px`,
-                left: `${pointerFormPosition.left}px`,
-                //width: "calc(22/100 * 100%)",
-                width: `${inputWidth}px`,
-                fontSize: `${inputFontSize}`,
+                top: "calc(175/800 * 100%)",
+                height: "calc(115/300 * 100%)",
+                left: "calc(100/200 * 100%)",
+                transform: "translate(-50%)",
               }}
-              className="absolute tracking-tighter leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden"
             >
-              <div className="flex items-center gap-2">
-                <p>YOUR NAME:</p>
-                <input
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                  }}
-                  className="bg-transparent border-b mb-1.5 border-white focus:border-b focus:border-white focus:outline-none h-full"
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <p>DATE OF BIRTH:</p>
-                <input
-                  value={dateOfBirth}
-                  onChange={(e) => {
-                    setDateOfBirth(e.target.value);
-                  }}
-                  className="bg-transparent border-b mb-1.5 border-white focus:border-b focus:border-white focus:outline-none h-full"
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <p>TIME OF BIRTH:</p>
-                <input
-                  value={timeOfBirth}
-                  onChange={(e) => {
-                    setTimeOfBirth(e.target.value);
-                  }}
-                  className="bg-transparent border-b mb-1.5 border-white focus:border-b focus:border-white focus:outline-none h-full"
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <p>LOCATION:</p>
-                <input
-                  value={location}
-                  onChange={(e) => {
-                    setLocation(e.target.value);
-                  }}
-                  className="bg-transparent border-b mb-1.5 border-white focus:border-b focus:border-white focus:outline-none h-full"
-                />
-                <Button onClick={handleClick} className="h-[10px]">
-                  Send
-                </Button>
-              </div>
+              <video
+                ref={loopVideoRef}
+                key={`loop-${videoKey}`}
+                muted
+                className="h-full w-full absolute top-0 left-0"
+                autoPlay
+                loop
+                playsInline
+                preload="auto"
+              >
+                <source src="/LadyFortuna_Blinks.mp4" type="video/mp4" />
+              </video>
+
+              {/* Ana video */}
+              <video
+                ref={mainVideoRef}
+                key={`main-${videoKey}`}
+                muted={videoMuted}
+                className={`h-full w-full absolute top-0 left-0 transition-opacity duration-1000 ${
+                  isMainVideoLoaded ? "opacity-100" : "opacity-0"
+                }`}
+                autoPlay
+                playsInline
+                preload="auto"
+                onEnded={handleVideoEnd}
+              >
+                <source src="/LadyFortuna_Full.mp4" type="video/mp4" />
+              </video>
             </div>
-          </form>
-        ) : (
-          <LoadingType
-            character={character}
-            pointerInputPosition={pointerInputPosition}
+          ) : (
+            ""
+          )}
+          {videoUrl && videoURLs.includes(videoUrl) ? (
+            <div
+              className="z-0 absolute left-1/2 -translate-x-1/2 flex justify-center aspect-[16/9]"
+              style={{
+                top: "calc(110/800 * 100%)",
+                height: "calc(115/300 * 100%)",
+                left: "calc(102/200 * 100%)",
+                transform: "translate(-50%)",
+              }}
+            >
+              <video
+                ref={videoRef}
+                key={videoKey}
+                muted={videoMuted}
+                className={`h-full w-full`}
+                autoPlay
+                playsInline
+                loop={videoUrl === "/LadyFortuna_Blinks.mp4"}
+                preload="none"
+                onEnded={handleVideoEnd}
+              >
+                <source src={videoUrl} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          ) : (
+            ""
+          )}
+        </div>
+        <div>
+          {fontSize ? (
+            <p
+              className="z-20 absolute flex justify-center mb-8 text-red-600"
+              style={{
+                top: `${pointerCreditPosition.top}px`,
+                left: `${pointerCreditPosition.left}px`,
+                fontSize: fontSize,
+              }}
+            >
+              {creditCount > 9 ? creditCount : `0${creditCount}`}
+            </p>
+          ) : (
+            ""
+          )}
+        </div>
+        {showForm && (
+          <SignInForm showForm={showForm} setShowForm={setShowForm} />
+        )}
+        {showBuyCredit && (
+          <BuyCredit
+            showBuyCredit={showBuyCredit}
+            setShowBuyCredit={setShowBuyCredit}
+            creditCount={creditCount}
+            setCreditCount={setCreditCount}
           />
         )}
-        <LazyLoadImage
-          className="z-10 absolute top-0 left-0 w-full h-full object-cover"
-          src="/ASTROLOGY_ROOM_LADY_FORTUNA.png"
-          alt="background"
-          style={{ objectFit: "cover" }}
-        />
-
-        {videoUrl && !videoURLs.includes(videoUrl) ? (
-          <div
-            className="z-0 absolute flex justify-center aspect-[16/9]"
-            style={{
-              top: "calc(175/800 * 100%)",
-              height: "calc(115/300 * 100%)",
-              left: "calc(100/200 * 100%)",
-              transform: "translate(-50%)",
-            }}
-          >
-            <video
-              ref={videoRef}
-              key={videoKey}
-              muted={videoMuted}
-              className={`h-full w-full `}
-              autoPlay
-              playsInline
-              preload="none"
-              onEnded={handleVideoEnd}
-            >
-              <source src={videoUrl} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        ) : (
-          ""
-        )}
-        {videoUrl && videoURLs.includes(videoUrl) ? (
-          <div
-            className="z-0 absolute left-1/2 -translate-x-1/2 flex justify-center aspect-[16/9]"
-            style={{
-              top: "calc(110/800 * 100%)",
-              height: "calc(115/300 * 100%)",
-              left: "calc(102/200 * 100%)",
-              transform: "translate(-50%)",
-            }}
-          >
-            <video
-              ref={videoRef}
-              key={videoKey}
-              muted={videoMuted}
-              className={`h-full w-full`}
-              autoPlay
-              playsInline
-              loop={videoUrl === "/LadyFortuna_Blinks.mp4"}
-              preload="none"
-              onEnded={handleVideoEnd}
-            >
-              <source src={videoUrl} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        ) : (
-          ""
-        )}
       </div>
-      <div>
-        {fontSize ? (
-          <p
-            className="z-20 absolute flex justify-center mb-8 text-red-600"
-            style={{
-              top: `${pointerCreditPosition.top}px`,
-              left: `${pointerCreditPosition.left}px`,
-              fontSize: fontSize,
-            }}
-          >
-            {creditCount > 9 ? creditCount : `0${creditCount}`}
-          </p>
-        ) : (
-          ""
-        )}
-      </div>
-      {showForm && <SignInForm showForm={showForm} setShowForm={setShowForm} />}
-      {showBuyCredit && (
-        <BuyCredit
-          showBuyCredit={showBuyCredit}
-          setShowBuyCredit={setShowBuyCredit}
-          creditCount={creditCount}
-          setCreditCount={setCreditCount}
-        />
-      )}
     </div>
   );
 }
@@ -492,5 +547,5 @@ export default function Home() {
                 fontSize: `${inputFontSize}`,
               }}
               className="absolute top-3/4 -translate-y-2/3 tracking-widest bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden"
-            />
+              />
 */
