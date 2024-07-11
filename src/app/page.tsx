@@ -46,7 +46,7 @@ export default function Home() {
     "https://storage.googleapis.com/childrenstory-bucket/AVA_033124_MOB.mp4";
 
   const image = { width: 1920, height: 970 };
-  const target = { x: 1235, y: 305 };
+  const target = { x: 1230, y: 305 };
   const targetInput = { x: 820, y: 807 };
   const targetForm = { x: 820, y: 880 };
   const targetVideo = { x: 500, y: 200 };
@@ -68,9 +68,10 @@ export default function Home() {
   });
   const [isMainVideoLoaded, setIsMainVideoLoaded] = useState(false);
   const [isFirstVideoEnded, setIsFirstVideoEnded] = useState(false);
+  const [isVideoGenerated, setIsVideoGenerated] = useState(false);
   const mainVideoRef = useRef<HTMLVideoElement>(null);
   const loopVideoRef = useRef<HTMLVideoElement>(null);
-
+  const [generatedVideoUrl, setGeneratedVideoUrl] = useState("");
   useEffect(() => {
     const updatePointer = () => {
       const windowWidth = window.innerWidth;
@@ -179,7 +180,9 @@ export default function Home() {
       const text = await res.text();
       console.log("text:" + text);
       setIsLoading(false);
-      setVideoUrl(text);
+      setGeneratedVideoUrl(text);
+      console.log("generated video url:");
+      console.log(text);
       setVideoKey(Date.now());
     } catch (error) {
       setIsError(true);
@@ -454,21 +457,23 @@ export default function Home() {
                 transform: "translate(-50%)",
               }}
             >
-              <video
-                ref={loopVideoRef}
-                key={`loop-${videoKey}`}
-                muted
-                className="h-full w-full absolute top-0 left-0"
-                autoPlay
-                loop
-                playsInline
-                preload="auto"
-              >
-                <source src="/LadyFortuna_Blinks.mp4" type="video/mp4" />
-              </video>
+              {!generatedVideoUrl && (
+                <video
+                  ref={loopVideoRef}
+                  key={`loop-${videoKey}`}
+                  muted
+                  className="h-full w-full absolute top-0 left-0"
+                  autoPlay
+                  loop
+                  playsInline
+                  preload="auto"
+                >
+                  <source src="/LadyFortuna_Blinks.mp4" type="video/mp4" />
+                </video>
+              )}
 
               {/* Ana video */}
-              {!isFirstVideoEnded && (
+              {!isFirstVideoEnded && !generatedVideoUrl && (
                 <video
                   ref={mainVideoRef}
                   key={`main-${videoKey}`}
@@ -486,9 +491,36 @@ export default function Home() {
               )}
             </div>
           ) : (
-            ""
+            <div
+              className="z-0 absolute flex justify-center aspect-[16/9]"
+              style={{
+                top: "calc(175/800 * 100%)",
+                height: "calc(115/300 * 100%)",
+                left: "calc(100/200 * 100%)",
+                transform: "translate(-50%)",
+              }}
+            >
+              {generatedVideoUrl && (
+                <video
+                  className={`h-full w-full absolute top-0 left-0 transition-opacity duration-1000`}
+                  key={`new-${videoKey}`}
+                  autoPlay
+                  playsInline
+                  preload="auto"
+                  onEnded={() => {
+                    setGeneratedVideoUrl("");
+                    setIsFirstVideoEnded(true);
+                    setVideoUrl("/LadyFortuna_Blinks.mp4");
+                    setVideoKey(Date.now());
+                  }}
+                >
+                  {" "}
+                  <source src={generatedVideoUrl} type="video/mp4" />
+                </video>
+              )}
+            </div>
           )}
-          {videoUrl && videoURLs.includes(videoUrl) ? (
+          {videoUrl && videoURLs.includes(videoUrl) && !generatedVideoUrl ? (
             <div
               className="z-0 absolute left-1/2 -translate-x-1/2 flex justify-center aspect-[16/9]"
               style={{
