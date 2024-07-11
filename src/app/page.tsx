@@ -67,8 +67,8 @@ export default function Home() {
     left: 0,
   });
   const [isMainVideoLoaded, setIsMainVideoLoaded] = useState(false);
-  const mainVideoRef = useRef(null);
-  const loopVideoRef = useRef(null);
+  const mainVideoRef = useRef<HTMLVideoElement>(null);
+  const loopVideoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const updatePointer = () => {
