@@ -339,7 +339,7 @@ export default function Home() {
           token
         </button>
         <div className="relative w-full h-screen">
-          {!isLoading ? (
+          {!isLoading && !isImageLoading ? (
             <form onSubmit={handleSubmit}>
               <p
                 style={{
@@ -416,10 +416,12 @@ export default function Home() {
               </div>
             </form>
           ) : (
-            <LoadingType
-              character={character}
-              pointerInputPosition={pointerInputPosition}
-            />
+            !isImageLoading && (
+              <LoadingType
+                character={character}
+                pointerInputPosition={pointerInputPosition}
+              />
+            )
           )}
           <LazyLoadImage
             className="z-10 absolute top-0 left-0 w-full h-full object-cover"
@@ -501,7 +503,7 @@ export default function Home() {
           )}
         </div>
         <div>
-          {fontSize ? (
+          {fontSize && !isImageLoading ? (
             <p
               className="z-20 absolute flex justify-center mb-8 text-red-600"
               style={{
