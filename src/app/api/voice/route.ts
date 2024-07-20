@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
     input: { text: retrievalResponse },
     voice: {
       languageCode: "en-US",
-      name: "en-US-Neural2-C",
+      name: "en-GB-Standard-F",
       ssmlGender: "FEMALE",
     },
     audioConfig: { audioEncoding: "MP3" },

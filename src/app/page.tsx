@@ -118,7 +118,7 @@ export default function Home() {
         top: targetVideo.y * scale + yOffset,
         left: targetVideo.x * scale + xOffset,
       });
-      setInputWidth(330 * scale + yOffset);
+      setInputWidth(320 * scale + yOffset);
     };
 
     updatePointer();
