@@ -76,6 +76,16 @@ export default function Home() {
   const mainVideoRef = useRef<HTMLVideoElement>(null);
   const loopVideoRef = useRef<HTMLVideoElement>(null);
   const [generatedVideoUrl, setGeneratedVideoUrl] = useState("");
+  const generatedVideoRef = useRef<HTMLVideoElement>(null);
+
+  const handleReplay = () => {
+    if (generatedVideoRef.current) {
+      generatedVideoRef.current.currentTime = 0;
+      generatedVideoRef.current.play();
+      setIsFirstVideoEnded(false);
+    }
+    console.log("Replay clicked"); // Kontrol için log ekledik
+  };
   useEffect(() => {
     const updatePointer = () => {
       const windowWidth = window.innerWidth;
@@ -267,9 +277,6 @@ export default function Home() {
   }, [isMainVideoLoaded]);
 
   const handleVideoEnd = () => {
-    if (!isFirstVideoEnded) {
-      setIsFirstVideoEnded(true);
-    }
     setVideoUrl("/LadyFortuna_Blinks.mp4");
     setVideoKey(Date.now());
   };
@@ -339,6 +346,16 @@ export default function Home() {
       <div className="text-white text-2xl">Loading...</div>
     </div>
   );
+
+  const handleStartOver = () => {
+    // Seçenek 1: Sayfayı tamamen yenile
+    window.location.href = "/";
+
+    // Seçenek 2: Router'ı kullan ve sonra sayfayı yenile
+    // router.push('/').then(() => {
+    //   window.location.reload();
+    // });
+  };
   return (
     <div>
       {isImageLoading && LoadingScreen()}
@@ -456,7 +473,26 @@ export default function Home() {
             style={{ objectFit: "cover" }}
             onLoad={() => setIsImageLoading(false)}
           />
-
+          {isFirstVideoEnded && (
+            <div
+              className={`h-full w-full absolute top-0 left-0 flex items-center justify-center z-50`}
+            >
+              <div className="flex flex-col gap-2">
+                <Button
+                  onClick={handleReplay}
+                  className="bg-white text-black hover:bg-gray-200 px-4 py-2 rounded cursor-pointer"
+                >
+                  Replay
+                </Button>
+                <Button
+                  onClick={handleStartOver}
+                  className="bg-white text-black hover:bg-gray-200 px-4 py-2 rounded cursor-pointer"
+                >
+                  Try again
+                </Button>
+              </div>
+            </div>
+          )}
           {videoUrl && !videoURLs.includes(videoUrl) ? (
             <div
               className="z-0 absolute flex justify-center aspect-[16/9]"
@@ -502,7 +538,7 @@ export default function Home() {
             </div>
           ) : (
             <div
-              className="z-0 absolute flex justify-center aspect-[16/9]"
+              className="z-100 absolute flex justify-center aspect-[16/9]"
               style={{
                 top: "calc(175/800 * 100%)",
                 height: "calc(115/300 * 100%)",
@@ -512,19 +548,15 @@ export default function Home() {
             >
               {generatedVideoUrl && (
                 <video
+                  ref={generatedVideoRef}
                   className={`h-full w-full absolute top-0 left-0 transition-opacity duration-1000`}
-                  key={`new-${videoKey}`}
                   autoPlay
                   playsInline
                   preload="auto"
                   onEnded={() => {
-                    setGeneratedVideoUrl("");
                     setIsFirstVideoEnded(true);
-                    setVideoUrl("/LadyFortuna_Blinks.mp4");
-                    setVideoKey(Date.now());
                   }}
                 >
-                  {" "}
                   <source src={generatedVideoUrl} type="video/mp4" />
                 </video>
               )}
