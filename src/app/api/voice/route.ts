@@ -113,17 +113,17 @@ export async function POST(req: NextRequest) {
     `https://storage.googleapis.com/${bucketName}/${fileDestination}`
   );
 
-  const payload = {
+  const result = `https://storage.googleapis.com/${bucketName}/${fileDestination}`;
+  return new Response(result);
+}
+
+/*
+const payload = {
     input_face:
       "https://storage.googleapis.com/raygunbucket/LadyFortuna_Blinks.mp4",
     input_audio: `https://storage.googleapis.com/${bucketName}/${fileDestination}`,
     selected_model: "Wav2Lip",
   };
-
-  const result = await gooeyAPI(payload);
-  return new Response(result.output.output_video);
-}
-
 async function gooeyAPI(payload: GooeyPayload) {
   const response = await fetch("https://api.gooey.ai/v2/Lipsync/", {
     method: "POST",
@@ -133,11 +133,12 @@ async function gooeyAPI(payload: GooeyPayload) {
     },
     body: JSON.stringify(payload),
   });
-
+  
   if (!response.ok) {
     throw new Error(`HTTP Error: ${response.status}`);
   }
-
+  
   const result = await response.json();
   return result;
 }
+*/

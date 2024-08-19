@@ -199,11 +199,31 @@ export default function Home() {
       });
       const text = await res.text();
       console.log("text:" + text);
-      setIsLoading(false);
-      setGeneratedVideoUrl(text);
-      console.log("generated video url:");
-      console.log(text);
-      setVideoKey(Date.now());
+      const startGeneration = await fetch("/api/startGeneration", {
+        method: "POST",
+        body: JSON.stringify({ audioUrl: text }),
+      });
+      const obj = await startGeneration.json();
+      const statusUrl = await obj.status_url;
+      while (true) {
+        const newRes = await fetch("/api/statusGeneration", {
+          method: "POST",
+          body: JSON.stringify({ status_url: statusUrl }),
+        });
+        const newResJson = await newRes.json();
+        const curStatus = newResJson.status;
+        if (curStatus === "not yet") {
+          console.log("not yet");
+          await new Promise((resolve) => setTimeout(resolve, 5000));
+        } else {
+          console.log("succes:");
+          console.log(newResJson);
+          setGeneratedVideoUrl(newResJson.output.output_video);
+          setVideoKey(Date.now());
+          setIsLoading(false);
+          break;
+        }
+      }
     } catch (error) {
       setIsError(true);
       console.error(error);
