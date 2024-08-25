@@ -48,7 +48,7 @@ export default function Home() {
   const image = { width: 1920, height: 970 };
   const target = { x: 1230, y: 305 };
   const targetInput = { x: 820, y: 807 };
-  const targetInputMobile = { x: 820, y: 837 };
+  const targetInputMobile = { x: 1200, y: 837 };
   const targetForm = { x: 820, y: 880 };
   const targetFormMobile = { x: 820, y: 910 };
   const targetVideo = { x: 500, y: 200 };
@@ -379,7 +379,7 @@ export default function Home() {
   return (
     <div>
       {isImageLoading && LoadingScreen()}
-      <div className="relative bg-black h-screen w-full">
+      <div className="relative bg-black h-screen w-full overflow-y-hidden">
         {isError && <ErrorComponent />}
         <button
           className="absolute z-30 top-0 bg-transparent text-transparent"
@@ -401,7 +401,7 @@ export default function Home() {
         >
           token
         </button>
-        <div className="relative w-full h-screen">
+        <div className={`relative md:w-full w-[1000px] h-screen`}>
           {!isLoading && !isImageLoading ? (
             <form onSubmit={handleSubmit}>
               <p
@@ -486,13 +486,15 @@ export default function Home() {
               />
             )
           )}
+
           <LazyLoadImage
-            className="z-10 absolute top-0 left-0 w-full h-full object-cover"
+            className="z-10 absolute top-0 md:left-0 -left-1/2 md:-translate-x-0 translate-x-1/4 w-full h-full object-cover"
             src="/ASTROLOGY_ROOM_LADY_FORTUNA.png"
             alt="background"
             style={{ objectFit: "cover" }}
             onLoad={() => setIsImageLoading(false)}
           />
+
           {isFirstVideoEnded && (
             <div
               className={`h-full w-full absolute -top-[70px] left-0 flex items-center justify-center z-50`}
