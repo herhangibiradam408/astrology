@@ -424,7 +424,7 @@ export default function Home() {
                   width: `${inputWidth}px`,
                   fontSize: `${inputFontSize}`,
                 }}
-                className={`absolute tracking-tighter md:top-[calc(87/100*100%)] md:left-[calc(85/200*100%)] top-[calc(86/100*100%)] left-[calc(1/5*100%)] leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden`}
+                className={`absolute tracking-tighter md:top-[calc(87/100*100%)] md:left-[calc(85/200*100%)] top-[calc(86/100*100dvh)] left-[calc(7/50*100dvh)] leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden`}
               >
                 <div className="flex items-center gap-2">
                   <p>YOUR NAME:</p>
@@ -718,7 +718,7 @@ export default function Home() {
         <div>
           {fontSize && !isImageLoading ? (
             <p
-              className="z-20 md:top-[calc(123/400*100%)] top-[calc(125/400*100%)] md:right-[calc(203/600*100%)] -right-[calc(102/400*100%)] absolute flex justify-center mb-8 text-red-600"
+              className="z-20 md:top-[calc(123/400*100%)] top-[calc(125/400*100dvh)] md:right-[calc(203/600*100%)] -right-[calc(49/400*100dvh)] absolute flex justify-center mb-8 text-red-600"
               style={{
                 fontSize: fontSize,
               }}
