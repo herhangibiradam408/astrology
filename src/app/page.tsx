@@ -387,7 +387,7 @@ export default function Home() {
     // });
   };
   return (
-    <div>
+    <div className="overflow-y-hidden">
       {isImageLoading && LoadingScreen()}
       <div className="relative bg-black h-[calc(100dvh)] md:w-full w-[calc((672/970)*100dvh)] overflow-y-hidden">
         {isError && <ErrorComponent />}
@@ -412,7 +412,7 @@ export default function Home() {
           token
         </button>
         <div
-          className={`relative md:w-full w-[calc((672/970)*100dvh)] h-[calc(100dvh)]`}
+          className={`relative md:w-full w-[calc((672/970)*100dvh)] h-[calc(100dvh)] overflow-y-hidden`}
         >
           {!isLoading && !isImageLoading ? (
             <form onSubmit={handleSubmit}>
@@ -423,7 +423,7 @@ export default function Home() {
                   //width: "calc(22/100 * 100%)",
                   width: `${inputWidth}px`,
                 }}
-                className={`absolute text-[calc(8/400*100dvh)] tracking-tighter md:top-[calc(87/100*100%)] md:left-[calc(85/200*100%)] top-[calc(86/100*100dvh)] left-[calc(7/50*100dvh)] leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden`}
+                className={`absolute md:text-[calc(8/400*100dvh)] text-[calc(7/400*100dvh)] tracking-tighter md:top-[calc(87/100*100%)] md:left-[calc(85/200*100%)] top-[calc(86/100*100dvh)] left-[calc(7/50*100dvh)] leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden`}
               >
                 <div className="flex items-center gap-2">
                   <p>YOUR NAME:</p>
@@ -502,7 +502,7 @@ export default function Home() {
 
           {isFirstVideoEnded && (
             <div
-              className={`h-full w-full absolute -top-[70px] left-0 flex items-center justify-center z-50`}
+              className={`h-full w-full absolute -top-[70px] md:left-0 -left-10 flex items-center justify-center z-50`}
             >
               <div className="flex flex-col gap-2">
                 <Button
