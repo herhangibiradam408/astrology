@@ -47,10 +47,11 @@ export default function Home() {
 
   const image = { width: 1920, height: 970 };
   const target = { x: 1230, y: 305 };
+  const targetCreditMobile = { x: 1270, y: 305 };
   const targetInput = { x: 820, y: 807 };
   const targetInputMobile = { x: 1200, y: 837 };
-  const targetForm = { x: 820, y: 880 };
-  const targetFormMobile = { x: 820, y: 910 };
+  const targetForm = { x: 810, y: 830 };
+  const targetFormMobile = { x: 860, y: 835 };
   const targetVideo = { x: 500, y: 200 };
   const [pointerCreditPosition, setPointerCreditPosition] = useState({
     top: 0,
@@ -105,8 +106,14 @@ export default function Home() {
       }
 
       setPointerCreditPosition({
-        top: target.y * scale + yOffset,
-        left: target.x * scale + xOffset,
+        top:
+          windowWidth > 768
+            ? target.y * scale + yOffset
+            : targetCreditMobile.y * scale + yOffset,
+        left:
+          windowWidth > 768
+            ? target.x * scale + xOffset
+            : targetCreditMobile.x * scale + xOffset,
       });
 
       setPointerInputPosition({
@@ -121,7 +128,10 @@ export default function Home() {
           windowWidth > 768
             ? targetForm.y * scale + yOffset
             : targetFormMobile.y * scale + yOffset,
-        left: targetForm.x * scale + xOffset,
+        left:
+          windowWidth > 768
+            ? targetForm.x * scale + xOffset
+            : targetFormMobile.x * scale + xOffset,
       });
 
       setPointerVideoPosition({
@@ -140,8 +150,8 @@ export default function Home() {
     setCharacter(Math.floor(Math.random() * 2) + 1 === 1 ? "AVA" : "KAI");
 
     function handleResize() {
-      const newFontSize = `${(window.innerHeight * 35) / 930}px`;
-      const newInputFontSize = `${(window.innerHeight * 15) / 930}px`;
+      const newFontSize = `${(window.innerHeight * 40) / 930}px`;
+      const newInputFontSize = `${(window.innerHeight * 18) / 930}px`;
       setFontSize(newFontSize);
       setInputFontSize(newInputFontSize);
     }
@@ -404,21 +414,6 @@ export default function Home() {
         <div className={`relative md:w-full w-[1000px] h-[calc(100dvh)]`}>
           {!isLoading && !isImageLoading ? (
             <form onSubmit={handleSubmit}>
-              <p
-                style={{
-                  height: "calc(1/6 * 100%)",
-                  top: `${pointerInputPosition.top}px`,
-                  left: `${pointerInputPosition.left}px`,
-                  //width: "calc(22/100 * 100%)",
-                  width: `${inputWidth}px`,
-                  fontSize: inputFontSize,
-                }}
-                className="absolute tracking-tighter leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden"
-              >
-                Bestow upon me the tales you wish to weave. The richer the
-                details, the finer the tapestry. Your data is encrypted for
-                privacy and security and deleted once our mystical session ends.
-              </p>
               <div
                 style={{
                   height: "calc(1/6 * 100%)",
@@ -516,98 +511,194 @@ export default function Home() {
             </div>
           )}
           {videoUrl && !videoURLs.includes(videoUrl) ? (
-            <div
-              className="z-0 absolute flex justify-center aspect-[16/9]"
-              style={{
-                top: "calc(175/800 * 100%)",
-                height: "calc(115/300 * 100%)",
-                left: "calc(100/200 * 100%)",
-                transform: "translate(-50%)",
-              }}
-            >
-              {!generatedVideoUrl && (
-                <video
-                  ref={loopVideoRef}
-                  key={`loop-${videoKey}`}
-                  muted
-                  className="h-full w-full absolute top-0 left-0"
-                  autoPlay
-                  loop
-                  playsInline
-                  preload="auto"
-                >
-                  <source src="/LadyFortuna_Blinks.mp4" type="video/mp4" />
-                </video>
-              )}
+            <div>
+              <div
+                className="z-0 absolute md:flex hidden justify-center aspect-[16/9]"
+                style={{
+                  top: "calc(175/800 * 100%)",
+                  height: "calc(115/300 * 100%)",
+                  left: "calc(100/200 * 100%)",
+                  transform: "translate(-50%)",
+                }}
+              >
+                {!generatedVideoUrl && (
+                  <video
+                    ref={loopVideoRef}
+                    key={`loop-${videoKey}`}
+                    muted
+                    className="h-full w-full absolute top-0 left-0"
+                    autoPlay
+                    loop
+                    playsInline
+                    preload="auto"
+                  >
+                    <source src="/LadyFortuna_Blinks.mp4" type="video/mp4" />
+                  </video>
+                )}
 
-              {/* Ana video */}
-              {!isFirstVideoEnded && !generatedVideoUrl && (
-                <video
-                  ref={mainVideoRef}
-                  key={`main-${videoKey}`}
-                  muted={videoMuted}
-                  className={`h-full w-full absolute top-0 left-0 transition-opacity duration-1000 ${
-                    isMainVideoLoaded ? "opacity-100" : "opacity-0"
-                  }`}
-                  autoPlay
-                  playsInline
-                  preload="auto"
-                  onEnded={handleVideoEnd}
-                >
-                  <source src="/LadyFortuna_Full.mp4" type="video/mp4" />
-                </video>
-              )}
+                {/* Ana video */}
+                {!isFirstVideoEnded && !generatedVideoUrl && (
+                  <video
+                    ref={mainVideoRef}
+                    key={`main-${videoKey}`}
+                    muted={videoMuted}
+                    className={`h-full w-full absolute top-0 left-0 transition-opacity duration-1000 ${
+                      isMainVideoLoaded ? "opacity-100" : "opacity-0"
+                    }`}
+                    autoPlay
+                    playsInline
+                    preload="auto"
+                    onEnded={handleVideoEnd}
+                  >
+                    <source src="/LadyFortuna_Full.mp4" type="video/mp4" />
+                  </video>
+                )}
+              </div>
+              <div
+                className="z-0 absolute flex md:hidden justify-center aspect-[16/9]"
+                style={{
+                  top: "calc(175/800 * 100%)",
+                  height: "calc(115/300 * 100%)",
+                  left: "calc(50/200 * 100%)",
+                  transform: "translate(-50%)",
+                }}
+              >
+                {!generatedVideoUrl && (
+                  <video
+                    ref={loopVideoRef}
+                    key={`loop-${videoKey}`}
+                    muted
+                    className="h-full w-full absolute top-0 left-0"
+                    autoPlay
+                    loop
+                    playsInline
+                    preload="auto"
+                  >
+                    <source src="/LadyFortuna_Blinks.mp4" type="video/mp4" />
+                  </video>
+                )}
+
+                {/* Ana video */}
+                {!isFirstVideoEnded && !generatedVideoUrl && (
+                  <video
+                    ref={mainVideoRef}
+                    key={`main-${videoKey}`}
+                    muted={videoMuted}
+                    className={`h-full w-full absolute top-0 left-0 transition-opacity duration-1000 ${
+                      isMainVideoLoaded ? "opacity-100" : "opacity-0"
+                    }`}
+                    autoPlay
+                    playsInline
+                    preload="auto"
+                    onEnded={handleVideoEnd}
+                  >
+                    <source src="/LadyFortuna_Full.mp4" type="video/mp4" />
+                  </video>
+                )}
+              </div>
             </div>
           ) : (
-            <div
-              className="z-100 absolute flex justify-center aspect-[16/9]"
-              style={{
-                top: "calc(175/800 * 100%)",
-                height: "calc(115/300 * 100%)",
-                left: "calc(100/200 * 100%)",
-                transform: "translate(-50%)",
-              }}
-            >
-              {generatedVideoUrl && (
-                <video
-                  ref={generatedVideoRef}
-                  className={`h-full w-full absolute top-0 left-0 transition-opacity duration-1000`}
-                  autoPlay
-                  playsInline
-                  preload="auto"
-                  onEnded={() => {
-                    setIsFirstVideoEnded(true);
-                  }}
-                >
-                  <source src={generatedVideoUrl} type="video/mp4" />
-                </video>
-              )}
+            <div>
+              <div
+                className="z-100 absolute md:flex hidden justify-center aspect-[16/9]"
+                style={{
+                  top: "calc(175/800 * 100%)",
+                  height: "calc(115/300 * 100%)",
+                  left: "calc(100/200 * 100%)",
+                  transform: "translate(-50%)",
+                }}
+              >
+                {generatedVideoUrl && (
+                  <video
+                    ref={generatedVideoRef}
+                    className={`h-full w-full absolute top-0 left-0 transition-opacity duration-1000`}
+                    autoPlay
+                    playsInline
+                    preload="auto"
+                    onEnded={() => {
+                      setIsFirstVideoEnded(true);
+                    }}
+                  >
+                    <source src={generatedVideoUrl} type="video/mp4" />
+                  </video>
+                )}
+              </div>
+              <div
+                className="z-100 absolute flex md:hidden justify-center aspect-[16/9]"
+                style={{
+                  top: "calc(175/800 * 100%)",
+                  height: "calc(115/300 * 100%)",
+                  left: "calc(50/200 * 100%)",
+                  transform: "translate(-50%)",
+                }}
+              >
+                {generatedVideoUrl && (
+                  <video
+                    ref={generatedVideoRef}
+                    className={`h-full w-full absolute top-0 left-0 transition-opacity duration-1000`}
+                    autoPlay
+                    playsInline
+                    preload="auto"
+                    onEnded={() => {
+                      setIsFirstVideoEnded(true);
+                    }}
+                  >
+                    <source src={generatedVideoUrl} type="video/mp4" />
+                  </video>
+                )}
+              </div>
             </div>
           )}
           {videoUrl && videoURLs.includes(videoUrl) && !generatedVideoUrl ? (
-            <div
-              className="z-0 absolute left-1/2 -translate-x-1/2 flex justify-center aspect-[16/9]"
-              style={{
-                top: "calc(110/800 * 100%)",
-                height: "calc(115/300 * 100%)",
-                left: "calc(102/200 * 100%)",
-                transform: "translate(-50%)",
-              }}
-            >
-              <video
-                ref={videoRef}
-                key={videoKey}
-                muted={videoMuted}
-                className={`h-full w-full`}
-                autoPlay
-                playsInline
-                loop={videoUrl === "/LadyFortuna_Blinks.mp4"}
-                preload="none"
-                onEnded={handleVideoEnd}
+            <div>
+              <div
+                className="z-0 absolute left-1/2 -translate-x-1/2 md:flex hidden justify-center aspect-[16/9]"
+                style={{
+                  top: "calc(110/800 * 100%)",
+                  height: "calc(115/300 * 100%)",
+                  left: "calc(102/200 * 100%)",
+                  transform: "translate(-50%)",
+                }}
               >
-                <source src={videoUrl} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+                <video
+                  ref={videoRef}
+                  key={videoKey}
+                  muted={videoMuted}
+                  className={`h-full w-full`}
+                  autoPlay
+                  playsInline
+                  loop={videoUrl === "/LadyFortuna_Blinks.mp4"}
+                  preload="none"
+                  onEnded={handleVideoEnd}
+                >
+                  <source src={videoUrl} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <div
+                className="z-0 absolute left-1/2 -translate-x-1/2 flex md:hidden justify-center aspect-[16/9]"
+                style={{
+                  top: "calc(110/800 * 100%)",
+                  height: "calc(115/300 * 100%)",
+                  left: "calc(51/200 * 100%)",
+                  transform: "translate(-50%)",
+                }}
+              >
+                <video
+                  ref={videoRef}
+                  key={videoKey}
+                  muted={videoMuted}
+                  className={`h-full w-full`}
+                  autoPlay
+                  playsInline
+                  loop={videoUrl === "/LadyFortuna_Blinks.mp4"}
+                  preload="none"
+                  onEnded={handleVideoEnd}
+                >
+                  <source src={videoUrl} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
             </div>
           ) : (
             ""
