@@ -389,7 +389,7 @@ export default function Home() {
   return (
     <div>
       {isImageLoading && LoadingScreen()}
-      <div className="relative bg-black h-[calc(100dvh)] w-full overflow-y-hidden">
+      <div className="relative bg-black h-[calc(100dvh)] w-[calc(100dvw)] overflow-y-hidden">
         {isError && <ErrorComponent />}
         <button
           className="absolute z-30 top-0 bg-transparent text-transparent"
