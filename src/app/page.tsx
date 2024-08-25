@@ -389,7 +389,7 @@ export default function Home() {
   return (
     <div>
       {isImageLoading && LoadingScreen()}
-      <div className="relative bg-black h-[calc(100dvh)] w-[calc(100dvw)] overflow-y-hidden">
+      <div className="relative bg-black h-[calc(100dvh)] md:w-full w-[calc((672/970)*100dvh)] overflow-y-hidden">
         {isError && <ErrorComponent />}
         <button
           className="absolute z-30 top-0 bg-transparent text-transparent"
@@ -422,9 +422,8 @@ export default function Home() {
 
                   //width: "calc(22/100 * 100%)",
                   width: `${inputWidth}px`,
-                  fontSize: `${inputFontSize}`,
                 }}
-                className={`absolute tracking-tighter md:top-[calc(87/100*100%)] md:left-[calc(85/200*100%)] top-[calc(86/100*100dvh)] left-[calc(7/50*100dvh)] leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden`}
+                className={`absolute text-[calc(8/400*100dvh)] tracking-tighter md:top-[calc(87/100*100%)] md:left-[calc(85/200*100%)] top-[calc(86/100*100dvh)] left-[calc(7/50*100dvh)] leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden`}
               >
                 <div className="flex items-center gap-2">
                   <p>YOUR NAME:</p>
@@ -524,53 +523,10 @@ export default function Home() {
           {videoUrl && !videoURLs.includes(videoUrl) ? (
             <div>
               <div
-                className="z-0 absolute md:flex hidden justify-center aspect-[16/9]"
+                className="z-0 absolute flex md:left-[calc(100/200*100%)] left-[calc(85/200*100%)] justify-center aspect-[16/9]"
                 style={{
                   top: "calc(175/800 * 100%)",
                   height: "calc(115/300 * 100%)",
-                  left: "calc(100/200 * 100%)",
-                  transform: "translate(-50%)",
-                }}
-              >
-                {!generatedVideoUrl && (
-                  <video
-                    ref={loopVideoRef}
-                    key={`loop-${videoKey}`}
-                    muted
-                    className="h-full w-full absolute top-0 left-0"
-                    autoPlay
-                    loop
-                    playsInline
-                    preload="auto"
-                  >
-                    <source src="/LadyFortuna_Blinks.mp4" type="video/mp4" />
-                  </video>
-                )}
-
-                {/* Ana video */}
-                {!isFirstVideoEnded && !generatedVideoUrl && (
-                  <video
-                    ref={mainVideoRef}
-                    key={`main-${videoKey}`}
-                    muted={videoMuted}
-                    className={`h-full w-full absolute top-0 left-0 transition-opacity duration-1000 ${
-                      isMainVideoLoaded ? "opacity-100" : "opacity-0"
-                    }`}
-                    autoPlay
-                    playsInline
-                    preload="auto"
-                    onEnded={handleVideoEnd}
-                  >
-                    <source src="/LadyFortuna_Full.mp4" type="video/mp4" />
-                  </video>
-                )}
-              </div>
-              <div
-                className="z-0 absolute flex md:hidden justify-center aspect-[16/9]"
-                style={{
-                  top: "calc(175/800 * 100%)",
-                  height: "calc(115/300 * 100%)",
-                  left: "calc(85/200 * 100%)",
                   transform: "translate(-50%)",
                 }}
               >
@@ -611,35 +567,11 @@ export default function Home() {
           ) : (
             <div>
               <div
-                className="z-100 absolute md:flex hidden justify-center aspect-[16/9]"
+                className="z-100 md:left-[calc(100/200*100%)] left-[calc(85/200*100%)] absolute flex justify-center aspect-[16/9]"
                 style={{
                   top: "calc(175/800 * 100%)",
                   height: "calc(115/300 * 100%)",
-                  left: "calc(100/200 * 100%)",
-                  transform: "translate(-50%)",
-                }}
-              >
-                {generatedVideoUrl && (
-                  <video
-                    ref={generatedVideoRef}
-                    className={`h-full w-full absolute top-0 left-0 transition-opacity duration-1000`}
-                    autoPlay
-                    playsInline
-                    preload="auto"
-                    onEnded={() => {
-                      setIsFirstVideoEnded(true);
-                    }}
-                  >
-                    <source src={generatedVideoUrl} type="video/mp4" />
-                  </video>
-                )}
-              </div>
-              <div
-                className="z-100 absolute flex md:hidden justify-center aspect-[16/9]"
-                style={{
-                  top: "calc(175/800 * 100%)",
-                  height: "calc(115/300 * 100%)",
-                  left: "calc(85/200 * 100%)",
+
                   transform: "translate(-50%)",
                 }}
               >
@@ -663,35 +595,11 @@ export default function Home() {
           {videoUrl && videoURLs.includes(videoUrl) && !generatedVideoUrl ? (
             <div>
               <div
-                className="z-0 absolute left-1/2 -translate-x-1/2 md:flex hidden justify-center aspect-[16/9]"
+                className="z-0 absolute -translate-x-1/2 flex md:left-[calc(100/200*100%)] left-[calc(86/200*100%)] justify-center aspect-[16/9]"
                 style={{
                   top: "calc(110/800 * 100%)",
                   height: "calc(115/300 * 100%)",
                   left: "calc(102/200 * 100%)",
-                  transform: "translate(-50%)",
-                }}
-              >
-                <video
-                  ref={videoRef}
-                  key={videoKey}
-                  muted={videoMuted}
-                  className={`h-full w-full`}
-                  autoPlay
-                  playsInline
-                  loop={videoUrl === "/LadyFortuna_Blinks.mp4"}
-                  preload="none"
-                  onEnded={handleVideoEnd}
-                >
-                  <source src={videoUrl} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-              <div
-                className="z-0 absolute left-1/2 -translate-x-1/2 flex md:hidden justify-center aspect-[16/9]"
-                style={{
-                  top: "calc(110/800 * 100%)",
-                  height: "calc(115/300 * 100%)",
-                  left: "calc(86/200 * 100%)",
                   transform: "translate(-50%)",
                 }}
               >
@@ -715,20 +623,15 @@ export default function Home() {
             ""
           )}
         </div>
-        <div>
-          {fontSize && !isImageLoading ? (
-            <p
-              className="z-20 md:top-[calc(123/400*100%)] top-[calc(125/400*100dvh)] md:right-[calc(203/600*100%)] -right-[calc(49/400*100dvh)] absolute flex justify-center mb-8 text-red-600"
-              style={{
-                fontSize: fontSize,
-              }}
-            >
-              {creditCount > 9 ? creditCount : `0${creditCount}`}
-            </p>
-          ) : (
-            ""
-          )}
-        </div>
+
+        {fontSize && !isImageLoading ? (
+          <p className="z-20 md:top-[calc(123/400*100%)] text-[calc(18/400*100dvh)] top-[calc(123/400*100%)] md:left-[calc(383/600*100%)] left-[calc(485/600*100%)] absolute flex justify-center mb-8 text-red-600">
+            {creditCount > 9 ? creditCount : `0${creditCount}`}
+          </p>
+        ) : (
+          ""
+        )}
+
         {showForm && (
           <SignInForm showForm={showForm} setShowForm={setShowForm} />
         )}
