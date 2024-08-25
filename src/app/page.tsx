@@ -411,19 +411,20 @@ export default function Home() {
         >
           token
         </button>
-        <div className={`relative md:w-full w-[1000px] h-[calc(100dvh)]`}>
+        <div
+          className={`relative md:w-full w-[calc((672/970)*100dvh)] h-[calc(100dvh)]`}
+        >
           {!isLoading && !isImageLoading ? (
             <form onSubmit={handleSubmit}>
               <div
                 style={{
                   height: "calc(1/6 * 100%)",
-                  top: `${pointerFormPosition.top}px`,
-                  left: `${pointerFormPosition.left}px`,
+
                   //width: "calc(22/100 * 100%)",
                   width: `${inputWidth}px`,
                   fontSize: `${inputFontSize}`,
                 }}
-                className="absolute tracking-tighter leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden"
+                className={`absolute tracking-tighter md:top-[calc(87/100*100%)] md:left-[calc(85/200*100%)] top-[calc(86/100*100%)] left-[calc(1/5*100%)] leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden`}
               >
                 <div className="flex items-center gap-2">
                   <p>YOUR NAME:</p>
@@ -481,14 +482,24 @@ export default function Home() {
               />
             )
           )}
-
-          <LazyLoadImage
-            className="z-10 absolute top-0 md:left-0 -left-1/2 md:-translate-x-0 translate-x-1/4 w-full h-full object-cover"
-            src="/ASTROLOGY_ROOM_LADY_FORTUNA.png"
-            alt="background"
-            style={{ objectFit: "cover" }}
-            onLoad={() => setIsImageLoading(false)}
-          />
+          <div className="md:flex hidden">
+            <LazyLoadImage
+              className="z-10 absolute hidden md:flex top-0 md:left-0 -left-1/2 md:-translate-x-0 translate-x-1/4 w-full h-full object-cover"
+              src="/ASTROLOGY_ROOM_LADY_FORTUNA.png"
+              alt="background"
+              style={{ objectFit: "cover" }}
+              onLoad={() => setIsImageLoading(false)}
+            />
+          </div>
+          <div className="md:hidden flex">
+            <LazyLoadImage
+              className="z-10 absolute md:hidden flex top-0 left-0 w-full h-full object-cover"
+              src="/room.png"
+              alt="background"
+              style={{ objectFit: "cover" }}
+              onLoad={() => setIsImageLoading(false)}
+            />
+          </div>
 
           {isFirstVideoEnded && (
             <div
@@ -559,7 +570,7 @@ export default function Home() {
                 style={{
                   top: "calc(175/800 * 100%)",
                   height: "calc(115/300 * 100%)",
-                  left: "calc(50/200 * 100%)",
+                  left: "calc(85/200 * 100%)",
                   transform: "translate(-50%)",
                 }}
               >
@@ -628,7 +639,7 @@ export default function Home() {
                 style={{
                   top: "calc(175/800 * 100%)",
                   height: "calc(115/300 * 100%)",
-                  left: "calc(50/200 * 100%)",
+                  left: "calc(85/200 * 100%)",
                   transform: "translate(-50%)",
                 }}
               >
@@ -680,7 +691,7 @@ export default function Home() {
                 style={{
                   top: "calc(110/800 * 100%)",
                   height: "calc(115/300 * 100%)",
-                  left: "calc(51/200 * 100%)",
+                  left: "calc(86/200 * 100%)",
                   transform: "translate(-50%)",
                 }}
               >
@@ -707,10 +718,8 @@ export default function Home() {
         <div>
           {fontSize && !isImageLoading ? (
             <p
-              className="z-20 absolute flex justify-center mb-8 text-red-600"
+              className="z-20 md:top-[calc(123/400*100%)] top-[calc(125/400*100%)] md:right-[calc(203/600*100%)] -right-[calc(102/400*100%)] absolute flex justify-center mb-8 text-red-600"
               style={{
-                top: `${pointerCreditPosition.top}px`,
-                left: `${pointerCreditPosition.left}px`,
                 fontSize: fontSize,
               }}
             >
