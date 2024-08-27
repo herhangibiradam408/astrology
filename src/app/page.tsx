@@ -389,7 +389,7 @@ export default function Home() {
   return (
     <div className="overflow-y-hidden">
       {isImageLoading && LoadingScreen()}
-      <div className="relative bg-black h-[calc(100dvh)] md:w-full w-[calc((672/970)*100dvh)] overflow-y-hidden">
+      <div className="relative bg-black h-[calc(100dvh)] xl:w-full md:w-[calc((1400/970)*100dvh)] w-[calc((672/970)*100dvh)] overflow-y-hidden">
         {isError && <ErrorComponent />}
         <button
           className="absolute z-30 top-0 bg-transparent text-transparent"
@@ -412,7 +412,7 @@ export default function Home() {
           token
         </button>
         <div
-          className={`relative md:w-full w-[calc((672/970)*100dvh)] h-[calc(100dvh)] overflow-y-hidden`}
+          className={`relative xl:w-full md:w-[calc((1400/970)*100dvh)] w-[calc((672/970)*100dvh)] h-[calc(100dvh)] overflow-y-hidden`}
         >
           {!isLoading && !isImageLoading ? (
             <form onSubmit={handleSubmit}>
@@ -423,7 +423,7 @@ export default function Home() {
                   //width: "calc(22/100 * 100%)",
                   width: `${inputWidth}px`,
                 }}
-                className={`absolute md:text-[calc(8/400*100dvh)] text-[calc(7/400*100dvh)] tracking-tighter md:top-[calc(87/100*100%)] md:left-[calc(85/200*100%)] top-[calc(86/100*100dvh)] left-[calc(7/50*100dvh)] leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden`}
+                className={`absolute md:text-[calc(8/400*100dvh)] text-[calc(7/400*100dvh)] tracking-tighter xl:top-[calc(87/100*100%)] md:top-[calc(86/100*100%)] xl:left-[calc(85/200*100%)] md:left-[calc(78/200*100%)] top-[calc(86/100*100dvh)] left-[calc(7/50*100dvh)] leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden`}
               >
                 <div className="flex items-center gap-2">
                   <p>YOUR NAME:</p>
@@ -481,7 +481,7 @@ export default function Home() {
               />
             )
           )}
-          <div className="md:flex hidden">
+          <div className="xl:flex hidden">
             <LazyLoadImage
               className="z-10 absolute hidden md:flex top-0 md:left-0 -left-1/2 md:-translate-x-0 translate-x-1/4 w-full h-full object-cover"
               src="/ASTROLOGY_ROOM_LADY_FORTUNA.png"
@@ -499,7 +499,14 @@ export default function Home() {
               onLoad={() => setIsImageLoading(false)}
             />
           </div>
-
+          <div className="xl:hidden md:flex hidden">
+            <LazyLoadImage
+              className="z-10 absolute top-0 left-0 w-[calc((1400/970)*100dvh)] h-full"
+              src="/1024.png"
+              alt="background"
+              onLoad={() => setIsImageLoading(false)}
+            />
+          </div>
           {isFirstVideoEnded && (
             <div
               className={`h-full w-full absolute -top-[70px] md:left-0 -left-10 flex items-center justify-center z-50`}
@@ -625,7 +632,7 @@ export default function Home() {
         </div>
 
         {fontSize && !isImageLoading ? (
-          <p className="z-20 md:top-[calc(123/400*100%)] text-[calc(18/400*100dvh)] top-[calc(123/400*100%)] md:left-[calc(383/600*100%)] left-[calc(485/600*100%)] absolute flex justify-center mb-8 text-red-600">
+          <p className="z-20 md:top-[calc(123/400*100%)] text-[calc(18/400*100dvh)] top-[calc(123/400*100%)] xl:left-[calc(383/600*100%)] md:left-[calc(412/600*100%)] left-[calc(485/600*100%)] absolute flex justify-center mb-8 text-red-600">
             {creditCount > 9 ? creditCount : `0${creditCount}`}
           </p>
         ) : (

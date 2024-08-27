@@ -5,6 +5,8 @@ import { Storage } from "@google-cloud/storage";
 import OpenAI from "openai";
 import { NextRequest } from "next/server";
 import { v4 as uuidv4 } from "uuid";
+export const maxDuration = 290;
+export const dynamic = "force-dynamic";
 interface GooeyPayload {
   input_face: string;
   input_audio: string;
