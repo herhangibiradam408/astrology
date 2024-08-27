@@ -56,7 +56,7 @@ function LoadingType({ character, pointerInputPosition }: LoadingType) {
 
         //width: "calc(22/100 * 100%)",
       }}
-      className={`absolute md:text-[calc(8/400*100dvh)] w-[calc(30/100*100dvh)] text-[calc(7/400*100dvh)] tracking-tighter md:top-[calc(87/100*100%)] md:left-[calc(85/200*100%)] top-[calc(86/100*100dvh)] left-[calc(7/50*100dvh)] leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden`}
+      className={`absolute md:text-[calc(8/400*100dvh)] w-[calc(30/100*100dvh)] text-[calc(7/400*100dvh)] tracking-tighter md:top-[calc(87/100*100%)] xl:left-[calc(85/200*100%)] md:left-[calc(78/200*100%)] top-[calc(86/100*100dvh)] left-[calc(7/50*100dvh)] leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden`}
     >
       {fontSize ? (
         <TypeAnimation
