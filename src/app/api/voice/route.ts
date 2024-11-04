@@ -16,7 +16,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-const bucketName = "raygunbucket";
+const bucketName = "raygunastrology";
 const storage = new Storage({
   projectId: process.env.PROJECT_ID,
   credentials: JSON.parse(
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
   const payloadText = {
     search_query: `Name: ${name}, Date of Birth: ${dateOfBirth}, Time of Birth: ${timeOfBirth}, Location: ${location}`,
     documents: [
-      "https://storage.googleapis.com/raygunbucket/manualofcartoman00gran.pdf",
+      "https://wrnxpooigyagkbnwptba.supabase.co/storage/v1/object/public/newbucket/manualofcartoman00gran.pdf",
     ],
     task_instructions: `You are an astrologer and expert in cartomancy who predicts the future by interpreting planetary positions and birth charts. You can provide numerology readings if given a name. You also offer daily horoscopes based on current dates and birthdays. Your tarot readings come from energy transmitted through the computer.
 Structure your response in this order:

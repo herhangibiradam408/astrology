@@ -14,7 +14,7 @@ export async function POST(req: any) {
 
   const payload = {
     input_face:
-      "https://storage.googleapis.com/raygunbucket/LadyFortuna_Blinks.mp4",
+      "https://storage.googleapis.com/raygunastrology/LadyFortuna_Blinks.mp4",
     input_audio: audioUrl,
     selected_model: "Wav2Lip",
   };
