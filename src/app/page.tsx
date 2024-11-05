@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import Image from "next/image";
 import LoadingType from "@/components/LoadingType";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { videos } from "../../videos";
@@ -11,10 +12,75 @@ import BuyCredit from "@/components/BuyCredit";
 import PaymentComponent from "@/components/PaymentComponent";
 import { Button } from "@/components/ui/button";
 import ErrorComponent from "@/components/ErrorComponent";
+import InputFormMobile from "@/components/InputFormMobile";
 
 export default function Home() {
   const { data: session } = useSession();
+  const containerRef = useRef<any>(null);
+  const [pointStyle, setPointStyle] = useState({ top: "0%", left: "0%" });
+  const [pointInputStyle, setPointInputStyle] = useState({
+    top: "0%",
+    left: "0%",
+  });
 
+  // Resmin orijinal boyutları
+  const originalImageWidth = 1920;
+  const originalImageHeight = 970;
+
+  // Noktanın orijinal resim üzerindeki koordinatları
+  const pointX = 1248; // X koordinatı (piksel cinsinden)
+  const pointY = 335; // Y koordinatı (piksel cinsinden)
+
+  const pointInputX = 965;
+  const pointInputY = 800;
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.clientWidth;
+        const containerHeight = containerRef.current.clientHeight;
+
+        // Ölçek faktörünü hesapla (objectFit: 'cover' için)
+        const scale = Math.max(
+          containerWidth / originalImageWidth,
+          containerHeight / originalImageHeight
+        );
+
+        // Ölçeklenmiş resmin boyutları
+        const displayedImageWidth = originalImageWidth * scale;
+        const displayedImageHeight = originalImageHeight * scale;
+
+        // Kırpılan kısımların offset değerleri
+        const offsetX = (displayedImageWidth - containerWidth) / 2;
+        const offsetY = (displayedImageHeight - containerHeight) / 2;
+
+        // Noktanın kapsayıcı içindeki pozisyonu
+        const pointXInContainer = pointX * scale - offsetX;
+        const pointYInContainer = pointY * scale - offsetY;
+
+        const pointInputXInContainer = pointInputX * scale - offsetX;
+        const pointInputYInContainer = pointInputY * scale - offsetY;
+        // Yüzde değerlerini hesapla
+        const newLeft = (pointXInContainer / containerWidth) * 100;
+        const newTop = (pointYInContainer / containerHeight) * 100;
+        const newInputLeft = (pointInputXInContainer / containerWidth) * 100;
+        const newInputTop = (pointInputYInContainer / containerHeight) * 100;
+
+        setPointStyle({
+          top: `${newTop}%`,
+          left: `${newLeft}%`,
+        });
+
+        setPointInputStyle({
+          top: `${newInputTop}%`,
+          left: `${newInputLeft}%`,
+        });
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const [screenWidth, setScreenWidth] = useState(0);
   const [inputText, setInputText] = useState("");
   const [videoMuted, setVideoMuted] = useState(true);
@@ -85,7 +151,7 @@ export default function Home() {
       generatedVideoRef.current.play();
       setIsFirstVideoEnded(false);
     }
-    console.log("Replay clicked"); // Kontrol için log ekledik
+    console.log("Replay clicked");
   };
   useEffect(() => {
     const updatePointer = () => {
@@ -186,6 +252,14 @@ export default function Home() {
     }, 2000);
   }, []);
 
+  useEffect(() => {
+    if (generatedVideoUrl && isFirstVideoEnded) {
+      console.log("first video ended:");
+
+      console.log("generated video url:");
+      console.log(generatedVideoUrl);
+    }
+  }, [generatedVideoUrl, isFirstVideoEnded]);
   useEffect(() => {
     if (isLoading) {
       setVideoUrl(videoURLs[Math.floor(Math.random() * 19)]);
@@ -415,15 +489,36 @@ export default function Home() {
           className={`relative xl:w-full md:w-[calc((1400/970)*100dvh)] w-[calc((672/970)*100dvh)] h-[calc(100dvh)] overflow-y-hidden`}
         >
           {!isLoading && !isImageLoading ? (
+            <div className="md:hidden flex">
+              <InputFormMobile
+                handleSubmit={handleSubmit}
+                inputWidth={inputWidth}
+                name={name}
+                setName={setName}
+                dateOfBirth={dateOfBirth}
+                setDateOfBirth={setDateOfBirth}
+                timeOfBirth={timeOfBirth}
+                setTimeOfBirth={setTimeOfBirth}
+                location={location}
+                setLocation={setLocation}
+                handleClick={handleClick}
+              />
+            </div>
+          ) : (
+            ""
+          )}
+          {!isLoading && !isImageLoading ? (
             <form onSubmit={handleSubmit}>
               <div
                 style={{
                   height: "calc(1/6 * 100%)",
-
+                  top: pointInputStyle.top,
+                  left: pointInputStyle.left,
+                  transform: "translate(-50%, -50%)",
                   //width: "calc(22/100 * 100%)",
                   width: `${inputWidth}px`,
                 }}
-                className={`absolute md:text-[calc(8/400*100dvh)] text-[calc(7/400*100dvh)] tracking-tighter xl:top-[calc(87/100*100%)] md:top-[calc(86/100*100%)] xl:left-[calc(85/200*100%)] md:left-[calc(78/200*100%)] top-[calc(86/100*100dvh)] left-[calc(7/50*100dvh)] leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden`}
+                className={`absolute md:block hidden md:text-[calc(8/400*100dvh)] text-[calc(7/400*100dvh)] tracking-tighter md:top-[${pointInputStyle.top}px] md:left-[${pointInputStyle.left}px] top-[calc(86/100*100dvh)] left-[calc(7/50*100dvh)] leading-tight -translate-y-2/3 bg-transparent border-none outline-none focus:border-none focus:outline-none text-white z-30 resize-none overflow-hidden`}
               >
                 <div className="flex items-center gap-2">
                   <p>YOUR NAME:</p>
@@ -481,15 +576,39 @@ export default function Home() {
               />
             )
           )}
-          <div className="xl:flex hidden">
+
+          <div
+            ref={containerRef}
+            className="relative z-20 sm:block hidden h-screen overflow-hidden"
+          >
             <LazyLoadImage
-              className="z-10 absolute hidden md:flex top-0 md:left-0 -left-1/2 md:-translate-x-0 translate-x-1/4 w-full h-full object-cover"
+              className="z-20 w-full h-full object-cover"
               src="/ASTROLOGY_ROOM_LADY_FORTUNA.png"
-              alt="background"
-              style={{ objectFit: "cover" }}
+              alt="Büyük Resim"
               onLoad={() => setIsImageLoading(false)}
             />
+
+            <div
+              className="z-20 absolute text-red-600"
+              style={{
+                top: pointStyle.top,
+                left: pointStyle.left,
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              {fontSize && !isImageLoading ? (
+                <p
+                  className="text-xl sm:flex hidden"
+                  style={{ fontSize: fontSize }}
+                >
+                  {creditCount > 9 ? creditCount : `0${creditCount}`}
+                </p>
+              ) : (
+                ""
+              )}
+            </div>
           </div>
+
           <div className="md:hidden flex">
             <LazyLoadImage
               className="z-10 absolute md:hidden flex top-0 left-0 w-full h-full object-cover"
@@ -630,15 +749,13 @@ export default function Home() {
             ""
           )}
         </div>
-
         {fontSize && !isImageLoading ? (
-          <p className="z-20 md:top-[calc(123/400*100%)] text-[calc(18/400*100dvh)] top-[calc(123/400*100%)] xl:left-[calc(383/600*100%)] md:left-[calc(412/600*100%)] left-[calc(485/600*100%)] absolute flex justify-center mb-8 text-red-600">
+          <p className="z-20 md:hidden flex text-[calc(18/400*100dvh)] top-[calc(123/400*100%)] xl:left-[calc(383/600*100%)] md:left-[calc(412/600*100%)] left-[calc(485/600*100%)] absolute justify-center mb-8 text-red-600">
             {creditCount > 9 ? creditCount : `0${creditCount}`}
           </p>
         ) : (
           ""
         )}
-
         {showForm && (
           <SignInForm showForm={showForm} setShowForm={setShowForm} />
         )}

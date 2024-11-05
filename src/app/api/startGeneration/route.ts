@@ -16,6 +16,7 @@ export async function POST(req: any) {
     input_face:
       "https://storage.googleapis.com/raygunastrology/LadyFortuna_Blinks.mp4",
     input_audio: audioUrl,
+
     selected_model: "Wav2Lip",
   };
 

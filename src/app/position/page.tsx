@@ -1,53 +1,77 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
-const ImagePointer = () => {
-  const image = { width: 1920, height: 970 };
-  const target = { x: 900, y: 88 };
-  const [pointerPosition, setPointerPosition] = useState({ top: 0, left: 0 });
+const ImageWithPoint = () => {
+  const containerRef = useRef<any>(null);
+  const [pointStyle, setPointStyle] = useState({ top: "0%", left: "0%" });
+
+  // Resmin orijinal boyutları
+  const originalImageWidth = 1920;
+  const originalImageHeight = 970;
+
+  // Noktanın orijinal resim üzerindeki koordinatları
+  const pointX = 1230; // X koordinatı (piksel cinsinden)
+  const pointY = 305; // Y koordinatı (piksel cinsinden)
 
   useEffect(() => {
-    const updatePointer = () => {
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
-      let xScale = windowWidth / image.width;
-      let yScale = windowHeight / image.height;
-      let scale,
-        yOffset = 0,
-        xOffset = 0;
+    const handleResize = () => {
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.clientWidth;
+        const containerHeight = containerRef.current.clientHeight;
 
-      if (xScale > yScale) {
-        scale = xScale;
-        yOffset = (windowHeight - image.height * scale) / 2;
-      } else {
-        scale = yScale;
-        xOffset = (windowWidth - image.width * scale) / 2;
+        // Ölçek faktörünü hesapla (objectFit: 'cover' için)
+        const scale = Math.max(
+          containerWidth / originalImageWidth,
+          containerHeight / originalImageHeight
+        );
+
+        // Ölçeklenmiş resmin boyutları
+        const displayedImageWidth = originalImageWidth * scale;
+        const displayedImageHeight = originalImageHeight * scale;
+
+        // Kırpılan kısımların offset değerleri
+        const offsetX = (displayedImageWidth - containerWidth) / 2;
+        const offsetY = (displayedImageHeight - containerHeight) / 2;
+
+        // Noktanın kapsayıcı içindeki pozisyonu
+        const pointXInContainer = pointX * scale - offsetX;
+        const pointYInContainer = pointY * scale - offsetY;
+
+        // Yüzde değerlerini hesapla
+        const newLeft = (pointXInContainer / containerWidth) * 100;
+        const newTop = (pointYInContainer / containerHeight) * 100;
+
+        setPointStyle({
+          top: `${newTop}%`,
+          left: `${newLeft}%`,
+        });
       }
-
-      setPointerPosition({
-        top: target.y * scale + yOffset,
-        left: target.x * scale + xOffset,
-      });
     };
 
-    updatePointer();
-    window.addEventListener("resize", updatePointer);
-
-    return () => window.removeEventListener("resize", updatePointer);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
-    <div className="relative bg-custom-background bg-no-repeat bg-center bg-cover h-screen w-screen">
-      <div
-        id="pointer"
-        className="absolute w-5 h-5 bg-red-500"
-        style={{
-          top: `${pointerPosition.top}px`,
-          left: `${pointerPosition.left}px`,
-        }}
+    <div ref={containerRef} className="relative h-screen overflow-hidden">
+      <Image
+        src="/ASTROLOGY_ROOM_LADY_FORTUNA.png"
+        alt="Büyük Resim"
+        layout="fill"
+        objectFit="cover"
       />
+      <div
+        className="absolute w-5 h-5 bg-red-500 rounded-full"
+        style={{
+          top: pointStyle.top,
+          left: pointStyle.left,
+          transform: "translate(-50%, -50%)",
+        }}
+      ></div>
     </div>
   );
 };
 
-export default ImagePointer;
+export default ImageWithPoint;
