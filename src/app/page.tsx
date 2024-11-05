@@ -572,7 +572,7 @@ export default function Home() {
             !isImageLoading && (
               <LoadingType
                 character={character}
-                pointerInputPosition={pointerInputPosition}
+                pointerInputPosition={pointInputStyle}
               />
             )
           )}
