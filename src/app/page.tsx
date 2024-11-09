@@ -29,7 +29,7 @@ export default function Home() {
 
   // Noktanın orijinal resim üzerindeki koordinatları
   const pointX = 1248; // X koordinatı (piksel cinsinden)
-  const pointY = 335; // Y koordinatı (piksel cinsinden)
+  const pointY = 330; // Y koordinatı (piksel cinsinden)
 
   const pointInputX = 965;
   const pointInputY = 800;
@@ -784,7 +784,7 @@ export default function Home() {
           )}
         </div>
         {fontSize && !isImageLoading ? (
-          <p className="z-20 md:hidden flex text-[calc(18/400*100dvh)] top-[calc(123/400*100%)] xl:left-[calc(383/600*100%)] md:left-[calc(412/600*100%)] left-[calc(485/600*100%)] absolute justify-center mb-8 text-red-600">
+          <p className="z-20 md:hidden flex text-[calc(18/400*100dvh)] top-[calc(123/400*100%)] xl:left-[calc(383/600*100%)] md:left-[calc(412/600*100%)] left-[calc(495/600*100%)] absolute justify-center mb-8 text-red-600">
             {creditCount > 9 ? creditCount : `0${creditCount}`}
           </p>
         ) : (
