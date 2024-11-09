@@ -667,7 +667,7 @@ export default function Home() {
           )}
           {videoUrl && !videoURLs.includes(videoUrl) ? (
             <div>
-              {!isPlaying && (
+              {!isPlaying && isImageLoading === false && (
                 <button
                   onClick={handlePlayClick}
                   className="absolute top-[calc(16/40*100%)] sm:left-1/2 left-[calc(85/200*100%)] transform -translate-x-1/2 -translate-y-1/2 bg-white/30 hover:bg-white/50 rounded-full p-4 z-50"
