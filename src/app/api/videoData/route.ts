@@ -4,7 +4,7 @@ import xml2js from "xml2js";
 
 export async function POST() {
   // URL'den XML verisini çek
-  const response = await fetch("https://muse.ai/collections/WQdRkN7/mrss");
+  const response = await fetch("https://muse.ai/collections/eRAjhid/mrss");
   if (!response.ok) {
     throw new Error(`Error: ${response.statusText}`);
   }

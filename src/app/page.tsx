@@ -22,7 +22,7 @@ export default function Home() {
     top: "0%",
     left: "0%",
   });
-
+  const [isPlaying, setIsPlaying] = useState(false);
   // Resmin orijinal boyutları
   const originalImageWidth = 1920;
   const originalImageHeight = 970;
@@ -145,6 +145,8 @@ export default function Home() {
   const [generatedVideoUrl, setGeneratedVideoUrl] = useState("");
   const generatedVideoRef = useRef<HTMLVideoElement>(null);
 
+  const [isGeneratedVideoPlaying, setIsGeneratedVideoPlaying] = useState(false);
+
   const handleReplay = () => {
     if (generatedVideoRef.current) {
       generatedVideoRef.current.currentTime = 0;
@@ -242,6 +244,8 @@ export default function Home() {
       const body = await res.json();
       const urls = body.urls;
       setVideoURLs(urls);
+      console.log("urls:");
+      console.log(urls);
     };
     fetchData();
     getCredit();
@@ -262,7 +266,7 @@ export default function Home() {
   }, [generatedVideoUrl, isFirstVideoEnded]);
   useEffect(() => {
     if (isLoading) {
-      setVideoUrl(videoURLs[Math.floor(Math.random() * 19)]);
+      setVideoUrl(videoURLs[0]);
       setVideoKey(Date.now());
     }
   }, [isLoading]);
@@ -363,22 +367,23 @@ export default function Home() {
   useEffect(() => {
     if (mainVideoRef.current) {
       mainVideoRef.current.muted = true;
-      mainVideoRef.current
-        .play()
-        .then(() => {
-          // Video başladıktan 2 saniye sonra sesi aç
-          setTimeout(() => {
-            if (mainVideoRef.current) {
-              mainVideoRef.current.muted = false;
-              setVideoMuted(false);
-            }
-          }, 2000);
-        })
-        .catch((error) => {
-          console.error("Video playback failed:", error);
-        });
+      if (isPlaying) {
+        mainVideoRef.current
+          .play()
+          .then(() => {
+            setTimeout(() => {
+              if (mainVideoRef.current) {
+                mainVideoRef.current.muted = false;
+                setVideoMuted(false);
+              }
+            }, 2000);
+          })
+          .catch((error) => {
+            console.error("Video playback failed:", error);
+          });
+      }
     }
-  }, [isMainVideoLoaded]);
+  }, [isPlaying, isMainVideoLoaded]);
 
   const handleVideoEnd = () => {
     setVideoUrl("/LadyFortuna_Blinks.mp4");
@@ -451,6 +456,12 @@ export default function Home() {
     </div>
   );
 
+  const handlePlayClick = () => {
+    if (mainVideoRef.current) {
+      setIsPlaying(true);
+    }
+  };
+
   const handleStartOver = () => {
     // Seçenek 1: Sayfayı tamamen yenile
     window.location.href = "/";
@@ -460,6 +471,14 @@ export default function Home() {
     //   window.location.reload();
     // });
   };
+
+  const handleGeneratedVideoPlay = () => {
+    if (generatedVideoRef.current) {
+      setIsGeneratedVideoPlaying(true);
+      generatedVideoRef.current.play();
+    }
+  };
+
   return (
     <div className="overflow-y-hidden">
       {isImageLoading && LoadingScreen()}
@@ -648,6 +667,23 @@ export default function Home() {
           )}
           {videoUrl && !videoURLs.includes(videoUrl) ? (
             <div>
+              {!isPlaying && (
+                <button
+                  onClick={handlePlayClick}
+                  className="absolute top-[calc(16/40*100%)] sm:left-1/2 left-[calc(85/200*100%)] transform -translate-x-1/2 -translate-y-1/2 bg-white/30 hover:bg-white/50 rounded-full p-4 z-50"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="white"
+                  >
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </button>
+              )}
+
               <div
                 className="z-0 absolute flex md:left-[calc(100/200*100%)] left-[calc(85/200*100%)] justify-center aspect-[16/9]"
                 style={{
@@ -656,21 +692,6 @@ export default function Home() {
                   transform: "translate(-50%)",
                 }}
               >
-                {!generatedVideoUrl && (
-                  <video
-                    ref={loopVideoRef}
-                    key={`loop-${videoKey}`}
-                    muted
-                    className="h-full w-full absolute top-0 left-0"
-                    autoPlay
-                    loop
-                    playsInline
-                    preload="auto"
-                  >
-                    <source src="/LadyFortuna_Blinks.mp4" type="video/mp4" />
-                  </video>
-                )}
-
                 {/* Ana video */}
                 {!isFirstVideoEnded && !generatedVideoUrl && (
                   <video
@@ -680,7 +701,6 @@ export default function Home() {
                     className={`h-full w-full absolute top-0 left-0 transition-opacity duration-1000 ${
                       isMainVideoLoaded ? "opacity-100" : "opacity-0"
                     }`}
-                    autoPlay
                     playsInline
                     preload="auto"
                     onEnded={handleVideoEnd}
@@ -692,12 +712,27 @@ export default function Home() {
             </div>
           ) : (
             <div>
+              {generatedVideoUrl && !isGeneratedVideoPlaying && (
+                <button
+                  onClick={handleGeneratedVideoPlay}
+                  className="absolute top-[calc(16/40*100%)] sm:left-1/2 left-[calc(85/200*100%)] transform -translate-x-1/2 -translate-y-1/2 bg-white/30 hover:bg-white/50 rounded-full p-4 z-50"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="white"
+                  >
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </button>
+              )}
               <div
                 className="z-100 md:left-[calc(100/200*100%)] left-[calc(85/200*100%)] absolute flex justify-center aspect-[16/9]"
                 style={{
                   top: "calc(175/800 * 100%)",
                   height: "calc(115/300 * 100%)",
-
                   transform: "translate(-50%)",
                 }}
               >
@@ -705,7 +740,6 @@ export default function Home() {
                   <video
                     ref={generatedVideoRef}
                     className={`h-full w-full absolute top-0 left-0 transition-opacity duration-1000`}
-                    autoPlay
                     playsInline
                     preload="auto"
                     onEnded={() => {
@@ -723,7 +757,7 @@ export default function Home() {
               <div
                 className="z-0 absolute -translate-x-1/2 flex md:left-[calc(100/200*100%)] left-[calc(86/200*100%)] justify-center aspect-[16/9]"
                 style={{
-                  top: "calc(110/800 * 100%)",
+                  top: "calc(140/800 * 100%)",
                   height: "calc(115/300 * 100%)",
                   left: "calc(102/200 * 100%)",
                   transform: "translate(-50%)",
