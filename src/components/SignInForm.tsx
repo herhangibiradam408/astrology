@@ -39,13 +39,31 @@ function SignInForm({ showForm, setShowForm }: SignInFormProps) {
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await signIn("email", {
-      email: emailAddress,
-      redirect: false,
-    });
-    if (result?.ok) {
-      setIsDisabled(true);
-      setIsButtonDisabled(true);
+    if (!validateEmailWithZod(emailAddress)) {
+      setEmailError("Please enter a valid email address.");
+      return;
+    }
+
+    setIsCustomLoading(true);
+    try {
+      const result = await signIn("email", {
+        email: emailAddress,
+        redirect: false,
+        callbackUrl: window.location.origin,
+      });
+
+      if (result?.ok) {
+        setIsCustomLoading(false);
+        setIsSent(true);
+      } else {
+        setIsCustomLoading(false);
+        setEmailError("Failed to send the magic link.");
+        console.error("Sign in error:", result?.error);
+      }
+    } catch (error) {
+      console.error("Sign in failed:", error);
+      setIsCustomLoading(false);
+      setEmailError("An unexpected error occurred.");
     }
   };
 
@@ -57,19 +75,45 @@ function SignInForm({ showForm, setShowForm }: SignInFormProps) {
     }
 
     setIsCustomLoading(true);
-    const result = await signIn("email", {
-      email: emailAddress,
-      redirect: false,
-    });
+    try {
+      const result = await signIn("email", {
+        email: emailAddress,
+        redirect: false,
+        callbackUrl: window.location.origin,
+      });
 
-    if (result?.ok) {
+      if (result?.ok) {
+        setIsCustomLoading(false);
+        setIsSent(true);
+      } else {
+        setIsCustomLoading(false);
+        setEmailError("Failed to send the magic link.");
+        console.error("Sign in error:", result?.error);
+      }
+    } catch (error) {
+      console.error("Sign in failed:", error);
       setIsCustomLoading(false);
-      setIsSent(true);
-    } else {
-      setIsCustomLoading(false);
-      setEmailError("Failed to send the magic link.");
+      setEmailError("An unexpected error occurred.");
     }
   };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signIn("google", {
+        redirect: false,
+        callbackUrl: window.location.origin,
+      });
+
+      if (result?.ok) {
+        setShowForm(false);
+      } else {
+        console.error("Google sign in error:", result?.error);
+      }
+    } catch (error) {
+      console.error("Google sign in failed:", error);
+    }
+  };
+
   return (
     <div>
       {!isSent ? (
@@ -122,10 +166,7 @@ function SignInForm({ showForm, setShowForm }: SignInFormProps) {
                       </div>
                       <div className="mt-3">
                         <Button
-                          onClick={() => {
-                            signIn("google");
-                            setShowForm(false);
-                          }}
+                          onClick={handleGoogleSignIn}
                           className="w-full bg-[#FF0000] text-gray-600 py-2 px-4 border border-gray-300 rounded-md hover:bg-[#FF0000] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                         >
                           <div className="flex text-xl items-center justify-center tracking-wide text-white">

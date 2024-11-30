@@ -236,6 +236,11 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (name && !session) {
+      setShowForm(true);
+    }
+  }, [name]);
+  useEffect(() => {
     handleCredit();
     const fetchData = async function () {
       const res = await fetch("/api/videoData", {
@@ -273,43 +278,45 @@ export default function Home() {
 
   const handleClick = async function () {
     try {
-      setIsLoading(true);
-      const res = await fetch("/api/voice", {
-        method: "POST",
-        body: JSON.stringify({
-          inputText: inputText,
-          character: character,
-          name,
-          dateOfBirth,
-          timeOfBirth,
-          location,
-        }),
-      });
-      const text = await res.text();
-      console.log("text:" + text);
-      const startGeneration = await fetch("/api/startGeneration", {
-        method: "POST",
-        body: JSON.stringify({ audioUrl: text }),
-      });
-      const obj = await startGeneration.json();
-      const statusUrl = await obj.status_url;
-      while (true) {
-        const newRes = await fetch("/api/statusGeneration", {
+      if (session) {
+        setIsLoading(true);
+        const res = await fetch("/api/voice", {
           method: "POST",
-          body: JSON.stringify({ status_url: statusUrl }),
+          body: JSON.stringify({
+            inputText: inputText,
+            character: character,
+            name,
+            dateOfBirth,
+            timeOfBirth,
+            location,
+          }),
         });
-        const newResJson = await newRes.json();
-        const curStatus = newResJson.status;
-        if (curStatus === "not yet") {
-          console.log("not yet");
-          await new Promise((resolve) => setTimeout(resolve, 5000));
-        } else {
-          console.log("succes:");
-          console.log(newResJson);
-          setGeneratedVideoUrl(newResJson.output.output_video);
-          setVideoKey(Date.now());
-          setIsLoading(false);
-          break;
+        const text = await res.text();
+        console.log("text:" + text);
+        const startGeneration = await fetch("/api/startGeneration", {
+          method: "POST",
+          body: JSON.stringify({ audioUrl: text }),
+        });
+        const obj = await startGeneration.json();
+        const statusUrl = await obj.status_url;
+        while (true) {
+          const newRes = await fetch("/api/statusGeneration", {
+            method: "POST",
+            body: JSON.stringify({ status_url: statusUrl }),
+          });
+          const newResJson = await newRes.json();
+          const curStatus = newResJson.status;
+          if (curStatus === "not yet") {
+            console.log("not yet");
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+          } else {
+            console.log("succes:");
+            console.log(newResJson);
+            setGeneratedVideoUrl(newResJson.output.output_video);
+            setVideoKey(Date.now());
+            setIsLoading(false);
+            break;
+          }
         }
       }
     } catch (error) {
@@ -319,32 +326,30 @@ export default function Home() {
   };
 
   const decrementCredit = async function () {
-    setCreditCount(creditCount - 1);
+    console.log("credit using");
+
     const res = await fetch("/api/useCredit", {
       method: "POST",
       body: JSON.stringify({ userId: session?.user?.id }),
     });
   };
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: any) => {
     if (!session) {
+      e.preventDefault();
       setShowForm(true);
     } else {
       if (creditCount > 0) {
-        setCreditCount(creditCount - 1);
+        console.log("credit count greater than 0");
         await handleClick();
-        setInputText("");
         await decrementCredit();
+        setCreditCount(creditCount - 1);
+        setInputText("");
       } else {
         setShowBuyCredit(true);
       }
     }
   };
-  const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      await handleSubmit();
-    }
-  };
+
   useEffect(() => {
     const handleResize = () => setScreenWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -399,20 +404,36 @@ export default function Home() {
   };
 
   const getCredit = async function () {
-    if (session?.user) {
-      console.log(session.user);
+    console.log("working");
+    console.log("currentses:");
+    console.log(session);
+    if (session?.user?.id) {
+      try {
+        const res = await fetch("/api/getCredit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: session.user.id,
+          }),
+        });
 
-      const res = await fetch("/api/getCredit", {
-        method: "POST",
-        body: JSON.stringify({
-          userId: session?.user.id,
-        }),
-      });
-      const resJSON = await res.json();
-      const credit = resJSON.credit;
-      setCreditCount(credit);
+        if (!res.ok) {
+          throw new Error("Failed to fetch credit");
+        }
+
+        const resJSON = await res.json();
+        console.log("curcredit:.");
+        console.log(resJSON);
+        setCreditCount(resJSON.credit || 0);
+      } catch (error) {
+        console.error("Error fetching credit:", error);
+        setCreditCount(0);
+      }
     } else {
-      console.log("not logged in");
+      console.log("User not logged in");
+      setCreditCount(0);
     }
   };
   const handleCredit = async function () {
@@ -579,7 +600,7 @@ export default function Home() {
                     className="bg-transparent border-b mb-1.5 border-white focus:border-b focus:border-white focus:outline-none h-full"
                   />
                   <Button
-                    onClick={handleClick}
+                    onClick={handleSubmit}
                     className="bg-transparent h-[10px]"
                   >
                     Send
