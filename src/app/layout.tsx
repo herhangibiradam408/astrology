@@ -3,7 +3,7 @@ import { Inter, Bebas_Neue } from "next/font/google";
 import "./globals.css";
 import SessionProvider from "@/components/SessionProvider";
 import { getServerSession } from "next-auth";
-import { authOptions } from "./options/authOptions";
+import { authOptions } from "@/lib/auth";
 import Head from "next/head";
 import Script from "next/script";
 
