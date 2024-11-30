@@ -5,6 +5,7 @@ import SessionProvider from "@/components/SessionProvider";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./options/authOptions";
 import Head from "next/head";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 const bebasNeue = Bebas_Neue({
@@ -26,7 +27,6 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <Head>
-        <script src="https://www.paypal.com/sdk/js?client-id=BAA93KMHLc6-DecbhTiai1oIwLjx1nyWQupHLk7kqf7Ffd8dcypMFkNyES8LQpF7R1YVknDTuNfFgK1cnI&enable-funding=venmo&currency=USD"></script>
         <link rel="icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico" />
@@ -44,6 +44,10 @@ export default async function RootLayout({
         <title>RAYGUN</title>
       </Head>
       <body className="bg-black">
+        <Script
+          src="https://www.paypal.com/sdk/js?client-id=BAA93KMHLc6-DecbhTiai1oIwLjx1nyWQupHLk7kqf7Ffd8dcypMFkNyES8LQpF7R1YVknDTuNfFgK1cnI&enable-funding=venmo&currency=USD"
+          strategy="lazyOnload"
+        />
         <SessionProvider session={session}>{children}</SessionProvider>
       </body>
     </html>
