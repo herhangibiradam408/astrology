@@ -5,7 +5,11 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "./prisma";
 import nodemailer from "nodemailer";
 
-const sendVerificationRequest = ({ identifier, url, provider }: any) => {
+const sendVerificationRequest = async ({
+  identifier,
+  url,
+  provider,
+}: any): Promise<void> => {
   const { server, from } = provider;
   const transport = nodemailer.createTransport(server);
   const message = {
@@ -40,7 +44,12 @@ const sendVerificationRequest = ({ identifier, url, provider }: any) => {
       </div>
     `,
   };
-  return transport.sendMail(message);
+
+  try {
+    await transport.sendMail(message);
+  } catch (error) {
+    console.error("Error sending verification email:", error);
+  }
 };
 
 export const authOptions: NextAuthOptions = {
