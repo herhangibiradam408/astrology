@@ -334,8 +334,8 @@ export default function Home() {
     });
   };
   const handleSubmit = async (e: any) => {
+    e.preventDefault();
     if (!session) {
-      e.preventDefault();
       setShowForm(true);
     } else {
       if (creditCount > 0) {
