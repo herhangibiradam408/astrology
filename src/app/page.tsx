@@ -601,7 +601,7 @@ export default function Home() {
                   />
                   <Button
                     onClick={handleSubmit}
-                    className="bg-transparent h-[10px]"
+                    className="bg-transparent h-[10px] px-0 py-0"
                   >
                     Send
                   </Button>
